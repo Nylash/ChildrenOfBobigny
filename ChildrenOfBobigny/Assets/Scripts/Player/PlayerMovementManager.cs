@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerMovementManager : MonoBehaviour
@@ -7,15 +6,15 @@ public class PlayerMovementManager : MonoBehaviour
     public static PlayerMovementManager instance;
 
     #region COMPONENTS
-    ControlsMap controlsMap;
-    CharacterController controller;
+    private ControlsMap controlsMap;
+    private CharacterController controller;
     #endregion
 
     #region VARIABLES
-    MovementState currentMovementState = MovementState.Moving;
-    Vector2 movementDirection;
-    Vector2 dashDirection;
-    bool isDashReady = true;
+    private MovementState currentMovementState = MovementState.Moving;
+    private Vector2 movementDirection;
+    private Vector2 dashDirection;
+    private bool isDashReady = true;
     #endregion
 
     #region CONFIGURATION
