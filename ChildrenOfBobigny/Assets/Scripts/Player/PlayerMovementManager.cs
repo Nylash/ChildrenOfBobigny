@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UIElements;
 
 public class PlayerMovementManager : MonoBehaviour
 {
@@ -8,13 +10,17 @@ public class PlayerMovementManager : MonoBehaviour
     #region COMPONENTS
     private ControlsMap controlsMap;
     private CharacterController controller;
+    [SerializeField] private Animator animator;
     #endregion
 
     #region VARIABLES
-    private MovementState currentMovementState = MovementState.Moving;
+    private MovementState currentMovementState = MovementState.Idling;
     private Vector2 movementDirection;
     private Vector2 dashDirection;
     private bool isDashReady = true;
+
+    public MovementState CurrentMovementState { get => currentMovementState; }
+    public Vector2 DashDirection { get => dashDirection; }
     #endregion
 
     #region CONFIGURATION
@@ -38,7 +44,7 @@ public class PlayerMovementManager : MonoBehaviour
 
         controlsMap = new ControlsMap();
 
-        controlsMap.Gameplay.Movement.performed += ctx => movementDirection = ctx.ReadValue<Vector2>();
+        controlsMap.Gameplay.Movement.performed += ctx => ReadMovementDirection(ctx);
         controlsMap.Gameplay.Movement.canceled += ctx => StopReadMovementDirection();
         controlsMap.Gameplay.Dash.performed += ctx => StartCoroutine(Dashing());
 
@@ -54,9 +60,11 @@ public class PlayerMovementManager : MonoBehaviour
                     controller.Move(new Vector3(movementDirection.x, 0, movementDirection.y) * movementSpeed * Time.deltaTime);
                 else
                     controller.Move(new Vector3(movementDirection.x, -gravityForce, movementDirection.y) * movementSpeed * Time.deltaTime);
+                animator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(movementDirection, PlayerAimManager.instance.AimDirection)));
                 break;
             case MovementState.Dashing:
-                controller.Move(new Vector3(dashDirection.x, 0, dashDirection.y) * dashSpeed * Time.deltaTime);
+                break;
+            case MovementState.Idling:
                 break;
             default:
                 Debug.LogError("No reason to be there !");
@@ -68,25 +76,41 @@ public class PlayerMovementManager : MonoBehaviour
     {
         if (isDashReady)
         {
+            animator.SetBool("Dashing", true);
             currentMovementState = MovementState.Dashing;
             isDashReady = false;
             if(movementDirection != Vector2.zero)
                 dashDirection = movementDirection;
-            yield return new WaitForSeconds(dashDuration);
+            float startTime = Time.time;
+            while( Time.time < startTime + dashDuration) 
+            {
+                controller.Move(new Vector3(dashDirection.x, 0, dashDirection.y) * dashSpeed * Time.deltaTime);
+                yield return null;
+            }
+            animator.SetBool("Dashing", false);
             currentMovementState = MovementState.Moving;
             yield return new WaitForSeconds(dashCD - dashDuration);
             isDashReady = true;
         }
     }
 
+    private void ReadMovementDirection(InputAction.CallbackContext ctx)
+    {
+        movementDirection = ctx.ReadValue<Vector2>().normalized;
+        currentMovementState = MovementState.Moving;
+        animator.SetBool("Running", true);
+    }
+
     private void StopReadMovementDirection()
     {
         dashDirection = movementDirection;
         movementDirection = Vector2.zero;
+        currentMovementState = MovementState.Idling;
+        animator.SetBool("Running", false);
     }
 
-    private enum MovementState
+    public enum MovementState
     {
-        Moving, Dashing
+        Idling, Moving, Dashing
     }
 }

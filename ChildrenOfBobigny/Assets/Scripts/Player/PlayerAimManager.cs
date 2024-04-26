@@ -45,23 +45,31 @@ public class PlayerAimManager : MonoBehaviour
 
     private void Update()
     {
-        if (playerInput.currentControlScheme == "Keyboard")
+        if(PlayerMovementManager.instance.CurrentMovementState != PlayerMovementManager.MovementState.Dashing)
         {
-            Ray ray = Camera.main.ScreenPointToRay(mouseDirection);
-            Plane plane = new Plane(Vector3.up, Vector3.zero);
-            float distance;
-            if (plane.Raycast(ray, out distance))
+            if (playerInput.currentControlScheme == "Keyboard")
             {
-                Vector3 target = ray.GetPoint(distance) - transform.position;
-                aimDirection = new Vector2(target.x, target.z).normalized;
+                Ray ray = Camera.main.ScreenPointToRay(mouseDirection);
+                Plane plane = new Plane(Vector3.up, Vector3.zero);
+                float distance;
+                if (plane.Raycast(ray, out distance))
+                {
+                    Vector3 target = ray.GetPoint(distance) - transform.position;
+                    aimDirection = new Vector2(target.x, target.z).normalized;
+                }
             }
+            else
+            {
+                aimDirection = stickDirection;
+            }
+
+            animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(animatorOrientation.GetFloat("InputX"), aimDirection.x, rotationSpeed));
+            animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(animatorOrientation.GetFloat("InputY"), aimDirection.y, rotationSpeed));
         }
         else
         {
-            aimDirection = stickDirection;
+            animatorOrientation.SetFloat("InputX", PlayerMovementManager.instance.DashDirection.x);
+            animatorOrientation.SetFloat("InputY", PlayerMovementManager.instance.DashDirection.y);
         }
-
-        animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(animatorOrientation.GetFloat("InputX"), aimDirection.x, rotationSpeed));
-        animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(animatorOrientation.GetFloat("InputY"), aimDirection.y, rotationSpeed));
     }
 }
