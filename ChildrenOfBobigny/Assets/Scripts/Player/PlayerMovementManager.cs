@@ -1,36 +1,30 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
-public class PlayerMovementManager : MonoBehaviour
+public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
-    public static PlayerMovementManager instance;
-
     #region COMPONENTS
     private ControlsMap _controlsMap;
     private CharacterController _controller;
-    [SerializeField] private Animator _animator;
+    [SerializeField] private Animator _graphAnimator;
     #endregion
 
     #region VARIABLES
     private MovementState _currentMovementState = MovementState.Idling;
     private Vector2 _movementDirection;
     private Vector2 _dashDirection;
-    private bool _isDashReady = true;
 
+    #region ACCESSEURS
     public MovementState CurrentMovementState { get => _currentMovementState; }
     public Vector2 DashDirection { get => _dashDirection; }
     public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
+    #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField] private float _movementSpeed = 5;
-    [SerializeField] private float _dashSpeed = 20;
-    [SerializeField] private float _dashCD = 1;
-    [SerializeField] private float _dashDuration = .3f;
-    [SerializeField] private float _gravityForce = 9.81f;
+    [SerializeField] private PlayerData _playerData;
     #endregion
 
     private void OnEnable() => _controlsMap.Gameplay.Enable();
@@ -38,11 +32,6 @@ public class PlayerMovementManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-
         _controlsMap = new ControlsMap();
 
         _controlsMap.Gameplay.Movement.performed += ctx => ReadMovementDirection(ctx);
@@ -54,8 +43,7 @@ public class PlayerMovementManager : MonoBehaviour
 
     private void Start()
     {
-        UI_GameMainManager.instance.DashBar.highValue = _dashCD;
-        UI_GameMainManager.instance.DashBar.value = _dashCD;
+        _playerData.DashIsReady = true;
     }
 
     private void Update()
@@ -63,57 +51,54 @@ public class PlayerMovementManager : MonoBehaviour
         if(_currentMovementState == MovementState.Moving)
         {
             if (_controller.isGrounded)
-                _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _movementSpeed * Time.deltaTime);
+                _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             else
-                _controller.Move(new Vector3(_movementDirection.x, -_gravityForce, _movementDirection.y) * _movementSpeed * Time.deltaTime);
-            _animator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.instance.AimDirection)));
+                _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
+            _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
         else if (_currentMovementState != MovementState.Dashing && !_controller.isGrounded)
         {
-            _controller.Move(new Vector3(0, -_gravityForce, 0) * _movementSpeed * Time.deltaTime);
+            _controller.Move(new Vector3(0, -_playerData.GravityForce, 0) * _playerData.MovementSpeed * Time.deltaTime);
         }
     }
 
     private IEnumerator Dashing()
     {
-        if (_isDashReady)
+        if (_playerData.DashIsReady)
         {
-            _animator.SetBool("Dashing", true);
-            UI_GameMainManager.instance.DashBar.value = 0;
-            _currentMovementState = MovementState.Dashing;
-            _isDashReady = false;
-            if(_movementDirection != Vector2.zero)
-                _dashDirection = _movementDirection;
+            StartDashing();
             float startTime = Time.time;
-            StartCoroutine(DashUI());
-            while( Time.time < startTime + _dashDuration) 
+            while( Time.time < startTime + _playerData.DashDuration) 
             {
-                _controller.Move(new Vector3(_dashDirection.x, 0, _dashDirection.y) * _dashSpeed * Time.deltaTime);
+                _controller.Move(new Vector3(_dashDirection.x, 0, _dashDirection.y) * _playerData.DashSpeed * Time.deltaTime);
                 yield return null;
             }
-            _animator.SetBool("Dashing", false);
-            _currentMovementState = MovementState.Moving;
-            yield return new WaitForSeconds(_dashCD - _dashDuration);
-            _isDashReady = true;
+            StopDashing();
+            yield return new WaitForSeconds(_playerData.DashCD - _playerData.DashDuration);
+            _playerData.DashIsReady = true;
         }
     }
 
-    private IEnumerator DashUI()
+    private void StartDashing()
     {
-        UI_GameMainManager.instance.SwitchDashBarColor();
-        while (!_isDashReady) 
-        {
-            UI_GameMainManager.instance.DashBar.value += Time.deltaTime;
-            yield return null;
-        }
-        UI_GameMainManager.instance.SwitchDashBarColor();
+        _graphAnimator.SetBool("Dashing", true);
+        _currentMovementState = MovementState.Dashing;
+        _playerData.DashIsReady = false;
+        if (_movementDirection != Vector2.zero)
+            _dashDirection = _movementDirection;
+    }
+
+    private void StopDashing()
+    {
+        _graphAnimator.SetBool("Dashing", false);
+        _currentMovementState = MovementState.Moving;
     }
 
     private void ReadMovementDirection(InputAction.CallbackContext ctx)
     {
         _movementDirection = ctx.ReadValue<Vector2>().normalized;
         _currentMovementState = MovementState.Moving;
-        _animator.SetBool("Running", true);
+        _graphAnimator.SetBool("Running", true);
     }
 
     private void StopReadMovementDirection()
@@ -121,7 +106,7 @@ public class PlayerMovementManager : MonoBehaviour
         _dashDirection = _movementDirection;
         _movementDirection = Vector2.zero;
         _currentMovementState = MovementState.Idling;
-        _animator.SetBool("Running", false);
+        _graphAnimator.SetBool("Running", false);
     }
 
     public enum MovementState

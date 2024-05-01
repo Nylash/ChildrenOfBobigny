@@ -1,7 +1,7 @@
 using UnityEngine;
 using Cinemachine;
 
-public class CameraBehaviorManager : MonoBehaviour
+public class CameraBehaviorManager : Singleton<CameraBehaviorManager>
 {
     void Start()
     {

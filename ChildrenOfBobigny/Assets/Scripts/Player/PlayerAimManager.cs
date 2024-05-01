@@ -1,10 +1,8 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public class PlayerAimManager : MonoBehaviour
+public class PlayerAimManager : Singleton<PlayerAimManager>
 {
-    public static PlayerAimManager instance;
-
     #region COMPONENTS
     [Header("COMPONENTS")]
     private ControlsMap _controlsMap;
@@ -17,12 +15,14 @@ public class PlayerAimManager : MonoBehaviour
     private Vector2 _mouseDirection;
     private Vector2 _aimDirection;
 
+    #region ACCESSEURS
     public Vector2 AimDirection { get => _aimDirection; }
+    #endregion
     #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField][Range(0, 1)] private float _rotationSpeed = .075f;
+    [SerializeField] private PlayerData _playerData;
     #endregion
 
     private void OnEnable() => _controlsMap.Gameplay.Enable();
@@ -30,11 +30,6 @@ public class PlayerAimManager : MonoBehaviour
 
     private void Awake()
     {
-        if (instance == null)
-            instance = this;
-        else if (instance != this)
-            Destroy(gameObject);
-
         _controlsMap = new ControlsMap();
 
         _controlsMap.Gameplay.AimStick.performed += ctx => _stickDirection = ctx.ReadValue<Vector2>();
@@ -46,7 +41,7 @@ public class PlayerAimManager : MonoBehaviour
 
     private void Update()
     {
-        if(PlayerMovementManager.instance.CurrentMovementState != PlayerMovementManager.MovementState.Dashing)
+        if(PlayerMovementManager.Instance.CurrentMovementState != PlayerMovementManager.MovementState.Dashing)
         {
             if (_playerInput.currentControlScheme == "Keyboard")
             {
@@ -66,19 +61,19 @@ public class PlayerAimManager : MonoBehaviour
 
             if(_aimDirection != Vector2.zero)
             {
-                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), _aimDirection.x, _rotationSpeed));
-                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), _aimDirection.y, _rotationSpeed));
+                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), _aimDirection.x, _playerData.RotationSpeed));
+                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), _aimDirection.y, _playerData.RotationSpeed));
             }
             else
             {
-                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), PlayerMovementManager.instance.MovementDirection.x, _rotationSpeed));
-                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), PlayerMovementManager.instance.MovementDirection.y, _rotationSpeed));
+                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), PlayerMovementManager.Instance.MovementDirection.x, _playerData.RotationSpeed));
+                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), PlayerMovementManager.Instance.MovementDirection.y, _playerData.RotationSpeed));
             }
         }
         else
         {
-            _animatorOrientation.SetFloat("InputX", PlayerMovementManager.instance.DashDirection.x);
-            _animatorOrientation.SetFloat("InputY", PlayerMovementManager.instance.DashDirection.y);
+            _animatorOrientation.SetFloat("InputX", PlayerMovementManager.Instance.DashDirection.x);
+            _animatorOrientation.SetFloat("InputY", PlayerMovementManager.Instance.DashDirection.y);
         }
     }
 }
