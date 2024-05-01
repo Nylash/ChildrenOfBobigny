@@ -104,12 +104,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8c65b570ef7f8544ba2880c4f86f4182, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animator: {fileID: 1818389763620531137}
-  movementSpeed: 5
-  dashSpeed: 20
-  dashCD: 1
-  dashDuration: 0.3
-  gravityForce: 9.81
+  _animator: {fileID: 1818389763620531137}
+  _movementSpeed: 5
+  _dashSpeed: 20
+  _dashCD: 1
+  _dashDuration: 0.3
+  _gravityForce: 9.81
 --- !u!114 &8806044117430650554
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -122,8 +122,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee8eb35fa2ab704499e040dd5d19738, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  animatorOrientation: {fileID: 3575064110620645405}
-  rotationSpeed: 0.075
+  _animatorOrientation: {fileID: 3575064110620645405}
+  _rotationSpeed: 0.075
 --- !u!1 &1538361600364676429
 GameObject:
   m_ObjectHideFlags: 0
