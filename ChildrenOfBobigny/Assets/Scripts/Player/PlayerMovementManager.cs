@@ -53,22 +53,17 @@ public class PlayerMovementManager : MonoBehaviour
 
     private void Update()
     {
-        switch (currentMovementState)
+        if(currentMovementState == MovementState.Moving)
         {
-            case MovementState.Moving:
-                if(controller.isGrounded)
-                    controller.Move(new Vector3(movementDirection.x, 0, movementDirection.y) * movementSpeed * Time.deltaTime);
-                else
-                    controller.Move(new Vector3(movementDirection.x, -gravityForce, movementDirection.y) * movementSpeed * Time.deltaTime);
-                animator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(movementDirection, PlayerAimManager.instance.AimDirection)));
-                break;
-            case MovementState.Dashing:
-                break;
-            case MovementState.Idling:
-                break;
-            default:
-                Debug.LogError("No reason to be there !");
-                break;
+            if (controller.isGrounded)
+                controller.Move(new Vector3(movementDirection.x, 0, movementDirection.y) * movementSpeed * Time.deltaTime);
+            else
+                controller.Move(new Vector3(movementDirection.x, -gravityForce, movementDirection.y) * movementSpeed * Time.deltaTime);
+            animator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(movementDirection, PlayerAimManager.instance.AimDirection)));
+        }
+        else if (currentMovementState != MovementState.Dashing && !controller.isGrounded)
+        {
+            controller.Move(new Vector3(0, -gravityForce, 0) * movementSpeed * Time.deltaTime);
         }
     }
 
