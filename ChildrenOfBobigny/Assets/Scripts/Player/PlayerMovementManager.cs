@@ -21,6 +21,7 @@ public class PlayerMovementManager : MonoBehaviour
 
     public MovementState CurrentMovementState { get => _currentMovementState; }
     public Vector2 DashDirection { get => _dashDirection; }
+    public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
 
     #region CONFIGURATION
@@ -51,6 +52,12 @@ public class PlayerMovementManager : MonoBehaviour
         _controller = GetComponent<CharacterController>();
     }
 
+    private void Start()
+    {
+        UI_GameMainManager.instance.DashBar.highValue = _dashCD;
+        UI_GameMainManager.instance.DashBar.value = _dashCD;
+    }
+
     private void Update()
     {
         if(_currentMovementState == MovementState.Moving)
@@ -72,11 +79,13 @@ public class PlayerMovementManager : MonoBehaviour
         if (_isDashReady)
         {
             _animator.SetBool("Dashing", true);
+            UI_GameMainManager.instance.DashBar.value = 0;
             _currentMovementState = MovementState.Dashing;
             _isDashReady = false;
             if(_movementDirection != Vector2.zero)
                 _dashDirection = _movementDirection;
             float startTime = Time.time;
+            StartCoroutine(DashUI());
             while( Time.time < startTime + _dashDuration) 
             {
                 _controller.Move(new Vector3(_dashDirection.x, 0, _dashDirection.y) * _dashSpeed * Time.deltaTime);
@@ -87,6 +96,17 @@ public class PlayerMovementManager : MonoBehaviour
             yield return new WaitForSeconds(_dashCD - _dashDuration);
             _isDashReady = true;
         }
+    }
+
+    private IEnumerator DashUI()
+    {
+        UI_GameMainManager.instance.SwitchDashBarColor();
+        while (!_isDashReady) 
+        {
+            UI_GameMainManager.instance.DashBar.value += Time.deltaTime;
+            yield return null;
+        }
+        UI_GameMainManager.instance.SwitchDashBarColor();
     }
 
     private void ReadMovementDirection(InputAction.CallbackContext ctx)

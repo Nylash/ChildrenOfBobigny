@@ -39,6 +39,7 @@ public class PlayerAimManager : MonoBehaviour
 
         _controlsMap.Gameplay.AimStick.performed += ctx => _stickDirection = ctx.ReadValue<Vector2>();
         _controlsMap.Gameplay.AimMouse.performed += ctx => _mouseDirection = ctx.ReadValue<Vector2>();
+        _controlsMap.Gameplay.AimStick.canceled += ctx => _stickDirection = Vector2.zero;
 
         _playerInput = GetComponent<PlayerInput>();
     }
@@ -63,8 +64,16 @@ public class PlayerAimManager : MonoBehaviour
                 _aimDirection = _stickDirection;
             }
 
-            _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), _aimDirection.x, _rotationSpeed));
-            _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), _aimDirection.y, _rotationSpeed));
+            if(_aimDirection != Vector2.zero)
+            {
+                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), _aimDirection.x, _rotationSpeed));
+                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), _aimDirection.y, _rotationSpeed));
+            }
+            else
+            {
+                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), PlayerMovementManager.instance.MovementDirection.x, _rotationSpeed));
+                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), PlayerMovementManager.instance.MovementDirection.y, _rotationSpeed));
+            }
         }
         else
         {
