@@ -7,7 +7,7 @@ public class PlayerData : ScriptableObject
     #region MOVEMENT VARIABLES
     [Header("MOVEMENT")]
     [SerializeField] private float _movementSpeed = 5;
-    [SerializeField] private float _rotationSpeed = .075f;
+    [SerializeField][Range(0, 1)] private float _rotationSpeed = .075f;
     [SerializeField] private float _gravityForce = 9.81f;
     #endregion
 
@@ -16,6 +16,11 @@ public class PlayerData : ScriptableObject
     [SerializeField] private float _dashSpeed = 20;
     [SerializeField] private float _dashCD = 1;
     [SerializeField] private float _dashDuration = .3f;
+    #endregion
+
+    #region ATTACK VARIABLES
+    [Tooltip("At 1 attack speed is attack animation speed.")]
+    [SerializeField][Range(0.5f, 3f)] private float _attackSpeed = 1f;
     #endregion
 
     #region UI VARIABLES
@@ -45,15 +50,26 @@ public class PlayerData : ScriptableObject
             dashIsReadyEvent.Invoke(_dashIsReady);
         }  
     }
+
+    public float AttackSpeed { get => _attackSpeed; 
+        set 
+        {
+            _attackSpeed = value;
+            attackSpeedEvent.Invoke(_attackSpeed);
+        }  
+    }
     #endregion
 
     #region EVENTS
     public UnityEvent<bool> dashIsReadyEvent;
+    public UnityEvent<float> attackSpeedEvent;
     #endregion
 
     private void OnEnable()
     {
         if (dashIsReadyEvent == null)
             dashIsReadyEvent = new UnityEvent<bool>();
+        if (attackSpeedEvent == null)
+            attackSpeedEvent = new UnityEvent<float>();
     }
 }

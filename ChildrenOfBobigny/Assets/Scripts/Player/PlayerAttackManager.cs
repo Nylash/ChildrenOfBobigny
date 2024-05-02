@@ -23,12 +23,15 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void OnEnable() => _controlsMap.Gameplay.Enable();
     private void OnDisable() => _controlsMap.Gameplay.Disable();
 
-    private void Awake()
+    protected override void OnAwake()
     {
         _controlsMap = new ControlsMap();
 
         _controlsMap.Gameplay.Attack.performed += ctx => StartAttacking();
         _controlsMap.Gameplay.Attack.canceled += ctx => StopAttacking();
+
+        _playerData.attackSpeedEvent.AddListener(UpdateAttackSpeed);
+        UpdateAttackSpeed(_playerData.AttackSpeed);
     }
 
     private void StartAttacking()
@@ -71,5 +74,10 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
         {
             PlayerMovementManager.Instance.ReadMovementDirection(PlayerMovementManager.Instance.MovementDirection);
         }
+    }
+
+    private void UpdateAttackSpeed(float value)
+    {
+        _graphAnimator.SetFloat("AttackSpeed", value);
     }
 }

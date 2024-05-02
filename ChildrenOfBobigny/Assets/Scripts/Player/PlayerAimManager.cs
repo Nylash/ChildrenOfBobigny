@@ -28,7 +28,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     private void OnEnable() => _controlsMap.Gameplay.Enable();
     private void OnDisable() => _controlsMap.Gameplay.Disable();
 
-    private void Awake()
+    protected override void OnAwake()
     {
         _controlsMap = new ControlsMap();
 
