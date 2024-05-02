@@ -50,10 +50,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     {
         if(_currentMovementState == MovementState.Moving)
         {
-            if (_controller.isGrounded)
-                _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
-            else
-                _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
+            _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
         else if (_currentMovementState != MovementState.Dashing && !_controller.isGrounded)
@@ -111,6 +108,6 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     public enum MovementState
     {
-        Idling, Moving, Dashing
+        Idling, Moving, Dashing, Attacking
     }
 }
