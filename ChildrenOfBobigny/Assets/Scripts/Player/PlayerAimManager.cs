@@ -6,7 +6,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     #region COMPONENTS
     [Header("COMPONENTS")]
     private ControlsMap _controlsMap;
-    [SerializeField] private Animator _animatorOrientation;
+    [SerializeField] private Animator _orientationAnimator;
     private PlayerInput _playerInput;
     #endregion
 
@@ -61,19 +61,19 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
 
             if(_aimDirection != Vector2.zero)
             {
-                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), _aimDirection.x, _playerData.RotationSpeed));
-                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), _aimDirection.y, _playerData.RotationSpeed));
+                _orientationAnimator.SetFloat("InputX", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputX"), _aimDirection.x, _playerData.RotationSpeed));
+                _orientationAnimator.SetFloat("InputY", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputY"), _aimDirection.y, _playerData.RotationSpeed));
             }
             else
             {
-                _animatorOrientation.SetFloat("InputX", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputX"), PlayerMovementManager.Instance.MovementDirection.x, _playerData.RotationSpeed));
-                _animatorOrientation.SetFloat("InputY", Mathf.MoveTowards(_animatorOrientation.GetFloat("InputY"), PlayerMovementManager.Instance.MovementDirection.y, _playerData.RotationSpeed));
+                _orientationAnimator.SetFloat("InputX", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputX"), PlayerMovementManager.Instance.MovementDirection.x, _playerData.RotationSpeed));
+                _orientationAnimator.SetFloat("InputY", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputY"), PlayerMovementManager.Instance.MovementDirection.y, _playerData.RotationSpeed));
             }
         }
         else
         {
-            _animatorOrientation.SetFloat("InputX", PlayerMovementManager.Instance.DashDirection.x);
-            _animatorOrientation.SetFloat("InputY", PlayerMovementManager.Instance.DashDirection.y);
+            _orientationAnimator.SetFloat("InputX", PlayerMovementManager.Instance.DashDirection.x);
+            _orientationAnimator.SetFloat("InputY", PlayerMovementManager.Instance.DashDirection.y);
         }
     }
 }
