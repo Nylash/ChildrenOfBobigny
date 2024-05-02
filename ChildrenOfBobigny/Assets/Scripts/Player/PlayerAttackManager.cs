@@ -63,7 +63,11 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void AttackedFinished()
     {
         PlayerMovementManager.Instance.CurrentMovementState = MovementState.Idling;
-        if (_controlsMap.Gameplay.Movement.IsPressed())
+        if (_controlsMap.Gameplay.Attack.IsPressed())
+        {
+            StartAttacking();
+        }
+        else if (_controlsMap.Gameplay.Movement.IsPressed())
         {
             PlayerMovementManager.Instance.ReadMovementDirection(PlayerMovementManager.Instance.MovementDirection);
         }
