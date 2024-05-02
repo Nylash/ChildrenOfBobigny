@@ -72,8 +72,8 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
         }
         else
         {
-            _orientationAnimator.SetFloat("InputX", PlayerMovementManager.Instance.DashDirection.x);
-            _orientationAnimator.SetFloat("InputY", PlayerMovementManager.Instance.DashDirection.y);
+            _orientationAnimator.SetFloat("InputX", PlayerMovementManager.Instance.MovementDirection.x);
+            _orientationAnimator.SetFloat("InputY", PlayerMovementManager.Instance.MovementDirection.y);
         }
     }
 }

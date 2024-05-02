@@ -62,6 +62,15 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""Attack"",
+                    ""type"": ""Button"",
+                    ""id"": ""cc032605-66ff-425d-872a-429ffea215cd"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -229,6 +238,28 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""action"": ""Dash"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8096ff11-2406-41ae-bb8c-743a65c71cac"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""f3a7a15a-9293-4cff-8b8a-80fec6c6a8d7"",
+                    ""path"": ""<Mouse>/leftButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -269,6 +300,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         m_Gameplay_AimStick = m_Gameplay.FindAction("AimStick", throwIfNotFound: true);
         m_Gameplay_AimMouse = m_Gameplay.FindAction("AimMouse", throwIfNotFound: true);
         m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
+        m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -334,6 +366,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_AimStick;
     private readonly InputAction m_Gameplay_AimMouse;
     private readonly InputAction m_Gameplay_Dash;
+    private readonly InputAction m_Gameplay_Attack;
     public struct GameplayActions
     {
         private @ControlsMap m_Wrapper;
@@ -342,6 +375,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         public InputAction @AimStick => m_Wrapper.m_Gameplay_AimStick;
         public InputAction @AimMouse => m_Wrapper.m_Gameplay_AimMouse;
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
+        public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -363,6 +397,9 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
             @Dash.started += instance.OnDash;
             @Dash.performed += instance.OnDash;
             @Dash.canceled += instance.OnDash;
+            @Attack.started += instance.OnAttack;
+            @Attack.performed += instance.OnAttack;
+            @Attack.canceled += instance.OnAttack;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -379,6 +416,9 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
             @Dash.started -= instance.OnDash;
             @Dash.performed -= instance.OnDash;
             @Dash.canceled -= instance.OnDash;
+            @Attack.started -= instance.OnAttack;
+            @Attack.performed -= instance.OnAttack;
+            @Attack.canceled -= instance.OnAttack;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -420,5 +460,6 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         void OnAimStick(InputAction.CallbackContext context);
         void OnAimMouse(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
+        void OnAttack(InputAction.CallbackContext context);
     }
 }

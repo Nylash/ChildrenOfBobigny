@@ -1,6 +1,5 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
@@ -13,11 +12,9 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #region VARIABLES
     private MovementState _currentMovementState = MovementState.Idling;
     private Vector2 _movementDirection;
-    private Vector2 _dashDirection;
 
     #region ACCESSEURS
-    public MovementState CurrentMovementState { get => _currentMovementState; }
-    public Vector2 DashDirection { get => _dashDirection; }
+    public MovementState CurrentMovementState { get => _currentMovementState; set => _currentMovementState = value; }
     public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
     #endregion
@@ -34,7 +31,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     {
         _controlsMap = new ControlsMap();
 
-        _controlsMap.Gameplay.Movement.performed += ctx => ReadMovementDirection(ctx);
+        _controlsMap.Gameplay.Movement.performed += ctx => ReadMovementDirection(ctx.ReadValue<Vector2>().normalized);
         _controlsMap.Gameplay.Movement.canceled += ctx => StopReadMovementDirection();
         _controlsMap.Gameplay.Dash.performed += ctx => StartCoroutine(Dashing());
 
@@ -61,18 +58,21 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private IEnumerator Dashing()
     {
-        if (_playerData.DashIsReady)
+        if(_currentMovementState != MovementState.Attacking)
         {
-            StartDashing();
-            float startTime = Time.time;
-            while( Time.time < startTime + _playerData.DashDuration) 
+            if (_playerData.DashIsReady)
             {
-                _controller.Move(new Vector3(_dashDirection.x, 0, _dashDirection.y) * _playerData.DashSpeed * Time.deltaTime);
-                yield return null;
+                StartDashing();
+                float startTime = Time.time;
+                while (Time.time < startTime + _playerData.DashDuration)
+                {
+                    _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _playerData.DashSpeed * Time.deltaTime);
+                    yield return null;
+                }
+                StopDashing();
+                yield return new WaitForSeconds(_playerData.DashCD - _playerData.DashDuration);
+                _playerData.DashIsReady = true;
             }
-            StopDashing();
-            yield return new WaitForSeconds(_playerData.DashCD - _playerData.DashDuration);
-            _playerData.DashIsReady = true;
         }
     }
 
@@ -81,29 +81,35 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         _graphAnimator.SetBool("Dashing", true);
         _currentMovementState = MovementState.Dashing;
         _playerData.DashIsReady = false;
-        if (_movementDirection != Vector2.zero)
-            _dashDirection = _movementDirection;
     }
 
     private void StopDashing()
     {
         _graphAnimator.SetBool("Dashing", false);
-        _currentMovementState = MovementState.Moving;
-    }
-
-    private void ReadMovementDirection(InputAction.CallbackContext ctx)
-    {
-        _movementDirection = ctx.ReadValue<Vector2>().normalized;
-        _currentMovementState = MovementState.Moving;
-        _graphAnimator.SetBool("Running", true);
-    }
-
-    private void StopReadMovementDirection()
-    {
-        _dashDirection = _movementDirection;
-        _movementDirection = Vector2.zero;
         _currentMovementState = MovementState.Idling;
-        _graphAnimator.SetBool("Running", false);
+        if (_controlsMap.Gameplay.Movement.IsPressed())
+        {
+            ReadMovementDirection(_movementDirection);
+        }
+    }
+
+    public void ReadMovementDirection(Vector2 direction)
+    {
+        _movementDirection = direction;
+        if (_currentMovementState != MovementState.Attacking)
+        {
+            _currentMovementState = MovementState.Moving;
+            _graphAnimator.SetBool("Running", true);
+        }
+    }
+
+    public void StopReadMovementDirection()
+    {
+        if (_currentMovementState != MovementState.Attacking)
+        {
+            _currentMovementState = MovementState.Idling;
+            _graphAnimator.SetBool("Running", false);
+        }
     }
 
     public enum MovementState
