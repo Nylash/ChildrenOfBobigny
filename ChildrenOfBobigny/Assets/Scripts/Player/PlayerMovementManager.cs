@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
@@ -24,7 +26,16 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     [SerializeField] private PlayerData _playerData;
     #endregion
 
-    private void OnEnable() => _controlsMap.Gameplay.Enable();
+    #region EVENTS
+    public UnityEvent event_inputMovementIsStopped;
+    #endregion
+
+    private void OnEnable()
+    {
+        _controlsMap.Gameplay.Enable();
+        if (event_inputMovementIsStopped == null)
+            event_inputMovementIsStopped = new UnityEvent();
+    } 
     private void OnDisable() => _controlsMap.Gameplay.Disable();
 
     protected override void OnAwake()
@@ -45,7 +56,14 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private void Update()
     {
-        if(_currentMovementState == MovementState.Moving)
+#if UNITY_EDITOR
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        }
+#endif
+
+        if (_currentMovementState == MovementState.Moving)
         {
             _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
@@ -95,11 +113,14 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     public void ReadMovementDirection(Vector2 direction)
     {
-        _movementDirection = direction;
-        if (_currentMovementState != MovementState.Attacking)
+        if(direction != Vector2.zero)//Avoid dead zone reading (performed is called also in dead zone :/)
         {
-            _currentMovementState = MovementState.Moving;
-            _graphAnimator.SetBool("Running", true);
+            _movementDirection = direction;
+            if (_currentMovementState != MovementState.Attacking)
+            {
+                _currentMovementState = MovementState.Moving;
+                _graphAnimator.SetBool("Running", true);
+            }
         }
     }
 
@@ -109,6 +130,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         {
             _currentMovementState = MovementState.Idling;
             _graphAnimator.SetBool("Running", false);
+            event_inputMovementIsStopped.Invoke();
         }
     }
 

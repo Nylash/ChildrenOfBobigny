@@ -31,7 +31,13 @@ public class GameMainUI : Singleton<GameMainUI>
 
     private void OnEnable()
     {
-        _playerData.dashIsReadyEvent.AddListener(SwitchDashStatus);
+        _playerData.event_dashAvailabilityUpdated.AddListener(SwitchDashStatus);
+    }
+
+    private void OnDisable()
+    {
+        if (!this.gameObject.scene.isLoaded) return;
+        _playerData.event_dashAvailabilityUpdated.RemoveListener(SwitchDashStatus);
     }
 
     private void Start()

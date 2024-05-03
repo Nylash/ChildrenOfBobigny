@@ -47,7 +47,7 @@ public class PlayerData : ScriptableObject
         set 
         {
             _dashIsReady = value;
-            dashIsReadyEvent.Invoke(_dashIsReady);
+            event_dashAvailabilityUpdated.Invoke(_dashIsReady);
         }  
     }
 
@@ -55,21 +55,21 @@ public class PlayerData : ScriptableObject
         set 
         {
             _attackSpeed = value;
-            attackSpeedEvent.Invoke(_attackSpeed);
+            event_attackSpeedUpdated.Invoke(_attackSpeed);
         }  
     }
     #endregion
 
     #region EVENTS
-    public UnityEvent<bool> dashIsReadyEvent;
-    public UnityEvent<float> attackSpeedEvent;
+    public UnityEvent<bool> event_dashAvailabilityUpdated;
+    public UnityEvent<float> event_attackSpeedUpdated;
     #endregion
 
     private void OnEnable()
     {
-        if (dashIsReadyEvent == null)
-            dashIsReadyEvent = new UnityEvent<bool>();
-        if (attackSpeedEvent == null)
-            attackSpeedEvent = new UnityEvent<float>();
+        if (event_dashAvailabilityUpdated == null)
+            event_dashAvailabilityUpdated = new UnityEvent<bool>();
+        if (event_attackSpeedUpdated == null)
+            event_attackSpeedUpdated = new UnityEvent<float>();
     }
 }

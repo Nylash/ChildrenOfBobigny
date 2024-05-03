@@ -20,8 +20,16 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     [SerializeField] private PlayerData _playerData;
     #endregion
 
-    private void OnEnable() => _controlsMap.Gameplay.Enable();
-    private void OnDisable() => _controlsMap.Gameplay.Disable();
+    private void OnEnable()
+    {
+        _controlsMap.Gameplay.Enable();
+        _playerData.event_attackSpeedUpdated.AddListener(UpdateAttackSpeed);
+    }
+    private void OnDisable()
+    {
+        _controlsMap.Gameplay.Disable();
+        _playerData.event_attackSpeedUpdated.RemoveListener(UpdateAttackSpeed);
+    }
 
     protected override void OnAwake()
     {
@@ -30,7 +38,6 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
         _controlsMap.Gameplay.Attack.performed += ctx => StartAttacking();
         _controlsMap.Gameplay.Attack.canceled += ctx => StopAttacking();
 
-        _playerData.attackSpeedEvent.AddListener(UpdateAttackSpeed);
         UpdateAttackSpeed(_playerData.AttackSpeed);
     }
 
