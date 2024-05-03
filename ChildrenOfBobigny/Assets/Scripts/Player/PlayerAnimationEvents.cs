@@ -9,7 +9,7 @@ public class PlayerAnimationEvents : MonoBehaviour
         _attackManager.IsAttackCancelled();
     }
 
-    public void AttackFinished()
+    public void AttackFinishing()
     {
         _attackManager.AttackFinishing();
     }

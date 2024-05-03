@@ -43,8 +43,10 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
 
     private void StartAttacking()
     {
+        //Prevent attacking while dashing
         if(PlayerMovementManager.Instance.CurrentMovementState != MovementState.Dashing)
         {
+            //Prevent moving while attacking
             PlayerMovementManager.Instance.StopReadMovementDirection();
             PlayerMovementManager.Instance.CurrentMovementState = MovementState.Attacking;
             _graphAnimator.SetBool("Attacking", true);
@@ -58,12 +60,14 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
 
     public void IsAttackCancelled()
     {
+        //Is input release ? Animation event at the end of two firsts attacks
         if (!_graphAnimator.GetBool("Attacking"))
         {
             AttackedFinished();
         }
     }
 
+    //Animation event at the end of the last attack
     public void AttackFinishing()
     {
         StopAttacking();
@@ -73,10 +77,12 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void AttackedFinished()
     {
         PlayerMovementManager.Instance.CurrentMovementState = MovementState.Idling;
+        //If attack input still pressed we start attacking right away (remove this or add delay to modify gameplay)
         if (_controlsMap.Gameplay.Attack.IsPressed())
         {
             StartAttacking();
         }
+        //If movement input is pressed we directly start using it
         else if (_controlsMap.Gameplay.Movement.IsPressed())
         {
             PlayerMovementManager.Instance.ReadMovementDirection(PlayerMovementManager.Instance.MovementDirection);

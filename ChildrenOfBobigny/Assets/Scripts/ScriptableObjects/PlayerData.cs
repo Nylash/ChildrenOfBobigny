@@ -31,7 +31,7 @@ public class PlayerData : ScriptableObject
 
     #region RUNTIME VARIABLES
     [Header("RUNTIME")]
-    private bool _dashIsReady;
+    private bool _dashIsReady = true;
     #endregion
 
     #region ACCESSEURS

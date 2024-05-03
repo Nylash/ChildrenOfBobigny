@@ -34,7 +34,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     }
     private void OnDisable()
     {
-        if (!this.gameObject.scene.isLoaded) return;
+        if (!this.gameObject.scene.isLoaded) return;//Avoid null ref
         _controlsMap.Gameplay.Disable();
         PlayerMovementManager.Instance.event_inputMovementIsStopped.RemoveListener(UpdateLastStickDirection);
     }
@@ -54,6 +54,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     {
         if(PlayerMovementManager.Instance.CurrentMovementState != PlayerMovementManager.MovementState.Dashing)
         {
+            //Get direction from mouse position if player is currently using Keyboard control scheme
             if (_playerInput.currentControlScheme == "Keyboard")
             {
                 Ray ray = Camera.main.ScreenPointToRay(_mouseDirection);
@@ -65,27 +66,32 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
                     _aimDirection = new Vector2(target.x, target.z).normalized;
                 }
             }
+            //Get direction from gamepad
             else
             {
                 _aimDirection = _stickDirection;
             }
 
-            if(_aimDirection != Vector2.zero)//Mouse or when right stick is used
+            //Mouse or right stick is used
+            if (_aimDirection != Vector2.zero)
             {
                 _orientationAnimator.SetFloat("InputX", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputX"), _aimDirection.x, _playerData.RotationSpeed));
                 _orientationAnimator.SetFloat("InputY", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputY"), _aimDirection.y, _playerData.RotationSpeed));
             }
-            else if(_controlsMap.Gameplay.Movement.IsPressed())//Right stick not used but left is, so we aim with it
+            //Right stick not used but left is, so we aim with it
+            else if (_controlsMap.Gameplay.Movement.IsPressed())
             {
                 _orientationAnimator.SetFloat("InputX", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputX"), PlayerMovementManager.Instance.MovementDirection.x, _playerData.RotationSpeed));
                 _orientationAnimator.SetFloat("InputY", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputY"), PlayerMovementManager.Instance.MovementDirection.y, _playerData.RotationSpeed));
             }
-            else//No direction is given (neither movement nor aim) so we look at the last one register
+            //No direction is given (neither movement nor aim) so we look at the last one register
+            else
             {
                 _orientationAnimator.SetFloat("InputX", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputX"), _lastStickDirection.x, _playerData.RotationSpeed));
                 _orientationAnimator.SetFloat("InputY", Mathf.MoveTowards(_orientationAnimator.GetFloat("InputY"), _lastStickDirection.y, _playerData.RotationSpeed));
             }
         }
+        //Player is dashing, we directly set the float to MovementDirection without smoothing it
         else
         {
             _orientationAnimator.SetFloat("InputX", PlayerMovementManager.Instance.MovementDirection.x);
@@ -95,13 +101,15 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
 
     private void StopReadingStickDirection()
     {
+        //Store last direction given by the stick
         _lastStickDirection = _stickDirection;
         _stickDirection = Vector2.zero;
     }
 
-    private void UpdateLastStickDirection()//If when player stop moving he wasn't aiming, we override _lastStickDirection with the movementDirection, so he keeps looking forward
+    private void UpdateLastStickDirection()
     {
-        if(_stickDirection == Vector2.zero) 
+        //If when player stop moving he wasn't aiming, we override _lastStickDirection with the MovementDirection, so he keeps looking forward
+        if (_stickDirection == Vector2.zero) 
         {
             _lastStickDirection = PlayerMovementManager.Instance.MovementDirection;
         }

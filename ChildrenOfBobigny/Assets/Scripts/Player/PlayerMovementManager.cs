@@ -49,11 +49,6 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         _controller = GetComponent<CharacterController>();
     }
 
-    private void Start()
-    {
-        _playerData.DashIsReady = true;
-    }
-
     private void Update()
     {
 #if UNITY_EDITOR
@@ -62,12 +57,14 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
             SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         }
 #endif
-
+        //Basic movement using Unity CharacterController, and apply gravity on Y to avoid floating
+        //Then set Angle float in running blend tree (angle between _movementDirection and AimDirection)
         if (_currentMovementState == MovementState.Moving)
         {
             _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
+        //Always applying gravity, also when not moving, only exception is while dashing
         else if (_currentMovementState != MovementState.Dashing && !_controller.isGrounded)
         {
             _controller.Move(new Vector3(0, -_playerData.GravityForce, 0) * _playerData.MovementSpeed * Time.deltaTime);
@@ -76,18 +73,23 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private IEnumerator Dashing()
     {
+        //Prevent dashing while attacking TODO : Instead this, cancel attack then dash
         if(_currentMovementState != MovementState.Attacking)
         {
             if (_playerData.DashIsReady)
             {
                 StartDashing();
+
                 float startTime = Time.time;
+                //Replace Update movement logic by this during DashDuration
                 while (Time.time < startTime + _playerData.DashDuration)
                 {
                     _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _playerData.DashSpeed * Time.deltaTime);
                     yield return null;
                 }
+
                 StopDashing();
+
                 yield return new WaitForSeconds(_playerData.DashCD - _playerData.DashDuration);
                 _playerData.DashIsReady = true;
             }
@@ -105,6 +107,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     {
         _graphAnimator.SetBool("Dashing", false);
         _currentMovementState = MovementState.Idling;
+        ////If movement input is pressed we directly start using it
         if (_controlsMap.Gameplay.Movement.IsPressed())
         {
             ReadMovementDirection(_movementDirection);
@@ -113,8 +116,10 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     public void ReadMovementDirection(Vector2 direction)
     {
-        if(direction != Vector2.zero)//Avoid dead zone reading (performed is called also in dead zone :/)
+        //Avoid dead zone reading (performed is called also in dead zone :/)
+        if (direction != Vector2.zero)
         {
+            //Update _movementDirection even while attacking, so we can aim with it
             _movementDirection = direction;
             if (_currentMovementState != MovementState.Attacking)
             {
@@ -126,12 +131,14 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     public void StopReadMovementDirection()
     {
+        //Don't do when attacking because it's already done at the start of the attack
         if (_currentMovementState != MovementState.Attacking)
         {
             _currentMovementState = MovementState.Idling;
             _graphAnimator.SetBool("Running", false);
-            event_inputMovementIsStopped.Invoke();
         }
+        //Still notify this to update new LastStickDirection
+        event_inputMovementIsStopped.Invoke();
     }
 
     public enum MovementState

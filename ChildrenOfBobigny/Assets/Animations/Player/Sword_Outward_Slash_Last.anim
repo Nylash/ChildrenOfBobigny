@@ -61276,7 +61276,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 2
-    functionName: AttackFinished
+    functionName: AttackFinishing
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
