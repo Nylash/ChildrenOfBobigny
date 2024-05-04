@@ -18,12 +18,12 @@ MonoBehaviour:
   _dashSpeed: 20
   _dashCD: 1
   _dashDuration: 0.3
-  _attackSpeed: 1
+  _attackSpeed: 1.701
   _colorDashInCD: {r: 0.7568628, g: 0.7568628, b: 0.7568628, a: 1}
   _colorDashReady: {r: 0.29615685, g: 0.7735849, b: 0.28826985, a: 1}
-  dashIsReadyEvent:
+  event_dashAvailabilityUpdated:
     m_PersistentCalls:
       m_Calls: []
-  attackSpeedEvent:
+  event_attackSpeedUpdated:
     m_PersistentCalls:
       m_Calls: []
