@@ -19,7 +19,7 @@ public class PlayerData : ScriptableObject
     #endregion
 
     #region ATTACK VARIABLES
-    [Tooltip("At 1 attack speed is attack animation speed.")]
+    [Tooltip("At 1 attack speed is 1 attack per second.")]
     [SerializeField][Range(0.5f, 3f)] private float _attackSpeed = 1f;
     #endregion
 

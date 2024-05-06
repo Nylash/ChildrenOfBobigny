@@ -34,8 +34,8 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     }
     private void OnDisable()
     {
-        if (!this.gameObject.scene.isLoaded) return;//Avoid null ref
         _controlsMap.Gameplay.Disable();
+        if (!this.gameObject.scene.isLoaded) return;//Avoid null ref
         PlayerMovementManager.Instance.event_inputMovementIsStopped.RemoveListener(UpdateLastStickDirection);
     }
 

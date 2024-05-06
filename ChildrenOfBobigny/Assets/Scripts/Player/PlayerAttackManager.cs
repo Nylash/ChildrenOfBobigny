@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using UnityEngine;
 using static PlayerMovementManager;
 
@@ -6,10 +7,11 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     #region COMPONENTS
     private ControlsMap _controlsMap;
     [SerializeField] private Animator _graphAnimator;
+    [SerializeField] private WeaponEvents _weaponEventsScript;
     #endregion
 
     #region VARIABLES
-
+    List<GameObject> _hitEnnemies = new List<GameObject>();
     #region ACCESSEURS
 
     #endregion
@@ -24,11 +26,14 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     {
         _controlsMap.Gameplay.Enable();
         _playerData.event_attackSpeedUpdated.AddListener(UpdateAttackSpeed);
+        _weaponEventsScript.event_weaponHitsSomething.AddListener(WeaponHitSomething);
     }
     private void OnDisable()
     {
         _controlsMap.Gameplay.Disable();
+        if (!this.gameObject.scene.isLoaded) return;//Avoid null ref
         _playerData.event_attackSpeedUpdated.RemoveListener(UpdateAttackSpeed);
+        _weaponEventsScript.event_weaponHitsSomething.RemoveListener(WeaponHitSomething);
     }
 
     protected override void OnAwake()
@@ -74,6 +79,12 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
         AttackedFinished();
     }
 
+    //Clear _hitEnnemies list at the start of a new attack, so we can hit everybody
+    public void StartNewAttack()
+    {
+        _hitEnnemies.Clear();
+    }
+
     private void AttackedFinished()
     {
         PlayerMovementManager.Instance.CurrentMovementState = MovementState.Idling;
@@ -92,5 +103,15 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void UpdateAttackSpeed(float value)
     {
         _graphAnimator.SetFloat("AttackSpeed", value);
+    }
+
+    private void WeaponHitSomething(Collider other)
+    {
+        if (!_hitEnnemies.Contains(other.gameObject))
+        {
+            //Once a ennemy is hit we add it to the list so we avoid hitting him twice with one attack
+            _hitEnnemies.Add(other.gameObject);
+            print(other.gameObject);
+        }
     }
 }

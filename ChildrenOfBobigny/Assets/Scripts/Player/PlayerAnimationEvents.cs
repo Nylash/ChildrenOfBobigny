@@ -13,4 +13,9 @@ public class PlayerAnimationEvents : MonoBehaviour
     {
         _attackManager.AttackFinishing();
     }
+
+    public void StartNewAttack()
+    {
+        _attackManager.StartNewAttack();
+    }
 }
