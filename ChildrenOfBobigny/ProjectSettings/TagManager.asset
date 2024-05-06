@@ -14,9 +14,9 @@ TagManager:
   - Player
   - PlayerSpell
   - PlayerWeapon
-  - Ennemy
-  - EnnemySpell
-  - EnnemyWeapon
+  - Enemy
+  - EnemySpell
+  - EnemyWeapon
   - Environnement
   - 
   - 

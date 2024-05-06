@@ -12,14 +12,14 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
 
     #region VARIABLES
     List<GameObject> _hitEnnemies = new List<GameObject>();
-    #region ACCESSEURS
+    #region ACCESSORS
 
     #endregion
     #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private Data_Player _playerData;
     #endregion
 
     private void OnEnable()
@@ -111,7 +111,14 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
         {
             //Once a ennemy is hit we add it to the list so we avoid hitting him twice with one attack
             _hitEnnemies.Add(other.gameObject);
-            print(other.gameObject);
+            try
+            {
+                other.gameObject.GetComponent<BasicEnemy>().TakeDamage(_playerData.AttackDamage);
+            }
+            catch (System.Exception)
+            {
+                Debug.LogError("Weapon hit something which doesn't have BasicEnemy script : " + other.gameObject.name);
+            }
         }
     }
 }

@@ -15,7 +15,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     private MovementState _currentMovementState = MovementState.Idling;
     private Vector2 _movementDirection;
 
-    #region ACCESSEURS
+    #region ACCESSORS
     public MovementState CurrentMovementState { get => _currentMovementState; set => _currentMovementState = value; }
     public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
@@ -23,7 +23,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private Data_Player _playerData;
     #endregion
 
     #region EVENTS
@@ -51,12 +51,6 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private void Update()
     {
-#if UNITY_EDITOR
-        if (Input.GetKeyDown(KeyCode.R))
-        {
-            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-        }
-#endif
         //Basic movement using Unity CharacterController, and apply gravity on Y to avoid floating
         //Then set Angle float in running blend tree (angle between _movementDirection and AimDirection)
         if (_currentMovementState == MovementState.Moving)

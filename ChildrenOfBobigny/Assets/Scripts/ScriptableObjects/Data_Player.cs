@@ -1,8 +1,12 @@
 using UnityEngine;
 using UnityEngine.Events;
 
+
+/// <summary>
+/// This SO is use for getting data but also store some, to avoid references between objects
+/// </summary>
 [CreateAssetMenu(menuName = "Scriptable Objects/Player Data")]
-public class PlayerData : ScriptableObject
+public class Data_Player : ScriptableObject
 {
     #region MOVEMENT VARIABLES
     [Header("MOVEMENT")]
@@ -21,6 +25,7 @@ public class PlayerData : ScriptableObject
     #region ATTACK VARIABLES
     [Tooltip("At 1 attack speed is 1 attack per second.")]
     [SerializeField][Range(0.5f, 3f)] private float _attackSpeed = 1f;
+    [SerializeField] private int _attackDamage = 10;
     #endregion
 
     #region UI VARIABLES
@@ -34,7 +39,7 @@ public class PlayerData : ScriptableObject
     private bool _dashIsReady = true;
     #endregion
 
-    #region ACCESSEURS
+    #region ACCESSORS
     public float DashSpeed { get => _dashSpeed; set => _dashSpeed = value; }
     public float DashCD { get => _dashCD; set => _dashCD = value; }
     public float DashDuration { get => _dashDuration; set => _dashDuration = value; }
@@ -58,6 +63,8 @@ public class PlayerData : ScriptableObject
             event_attackSpeedUpdated.Invoke(_attackSpeed);
         }  
     }
+
+    public int AttackDamage { get => _attackDamage; set => _attackDamage = value; }
     #endregion
 
     #region EVENTS

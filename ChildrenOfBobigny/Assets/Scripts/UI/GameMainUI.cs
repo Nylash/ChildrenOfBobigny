@@ -16,7 +16,7 @@ public class GameMainUI : Singleton<GameMainUI>
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private Data_Player _playerData;
     #endregion
 
     protected override void OnAwake()

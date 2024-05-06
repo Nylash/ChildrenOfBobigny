@@ -17,14 +17,14 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
     private Vector2 _aimDirection;
     private Vector2 _lastStickDirection;
 
-    #region ACCESSEURS
+    #region ACCESSORS
     public Vector2 AimDirection { get => _aimDirection; }
     #endregion
     #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private Data_Player _playerData;
     #endregion
 
     private void OnEnable()
