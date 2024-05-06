@@ -77,13 +77,13 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void AttackedFinished()
     {
         PlayerMovementManager.Instance.CurrentMovementState = MovementState.Idling;
-        /*//If attack input still pressed we start attacking right away (remove this or add delay to modify gameplay)
+        //If attack input still pressed we start attacking right away (remove this or add delay to modify gameplay)
         if (_controlsMap.Gameplay.Attack.IsPressed())
         {
             StartAttacking();
         }
         //If movement input is pressed we directly start using it
-        else */if (_controlsMap.Gameplay.Movement.IsPressed())
+        else if (_controlsMap.Gameplay.Movement.IsPressed())
         {
             PlayerMovementManager.Instance.ReadMovementDirection(PlayerMovementManager.Instance.MovementDirection);
         }
