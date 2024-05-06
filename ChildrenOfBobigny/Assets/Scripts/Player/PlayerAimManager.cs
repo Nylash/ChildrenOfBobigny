@@ -52,7 +52,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
 
     private void Update()
     {
-        if(PlayerMovementManager.Instance.CurrentMovementState != PlayerMovementManager.MovementState.Dashing)
+        if(PlayerMovementManager.Instance.CurrentMovementState != PlayerMovementManager.BehaviorState.DASH)
         {
             //Get direction from mouse position if player is currently using Keyboard control scheme
             if (_playerInput.currentControlScheme == "Keyboard")

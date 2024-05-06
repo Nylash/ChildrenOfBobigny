@@ -49,12 +49,12 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void StartAttacking()
     {
         //Prevent attacking while dashing
-        if(PlayerMovementManager.Instance.CurrentMovementState != MovementState.Dashing)
+        if(PlayerMovementManager.Instance.CurrentMovementState != BehaviorState.DASH)
         {
             _graphAnimator.SetBool("Attacking", true);
             //Prevent moving while attacking
             PlayerMovementManager.Instance.StopReadMovementDirection();
-            PlayerMovementManager.Instance.CurrentMovementState = MovementState.Attacking;
+            PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.ATTACK;
         }
     }
 
@@ -87,7 +87,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
 
     private void AttackedFinished()
     {
-        PlayerMovementManager.Instance.CurrentMovementState = MovementState.Idling;
+        PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.IDLE;
         //If attack input still pressed we start attacking right away (remove this or add delay to modify gameplay)
         if (_controlsMap.Gameplay.Attack.IsPressed())
         {

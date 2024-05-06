@@ -12,11 +12,11 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #endregion
 
     #region VARIABLES
-    private MovementState _currentMovementState = MovementState.Idling;
+    private BehaviorState _currentBehavior = BehaviorState.IDLE;
     private Vector2 _movementDirection;
 
     #region ACCESSORS
-    public MovementState CurrentMovementState { get => _currentMovementState; set => _currentMovementState = value; }
+    public BehaviorState CurrentMovementState { get => _currentBehavior; set => _currentBehavior = value; }
     public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
     #endregion
@@ -53,13 +53,13 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     {
         //Basic movement using Unity CharacterController, and apply gravity on Y to avoid floating
         //Then set Angle float in running blend tree (angle between _movementDirection and AimDirection)
-        if (_currentMovementState == MovementState.Moving)
+        if (_currentBehavior == BehaviorState.MOVE)
         {
             _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
         //Always applying gravity, also when not moving, only exception is while dashing
-        else if (_currentMovementState != MovementState.Dashing && !_controller.isGrounded)
+        else if (_currentBehavior != BehaviorState.DASH && !_controller.isGrounded)
         {
             _controller.Move(new Vector3(0, -_playerData.GravityForce, 0) * _playerData.MovementSpeed * Time.deltaTime);
         }
@@ -68,7 +68,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     private IEnumerator Dashing()
     {
         //Prevent dashing while attacking TODO : Instead this, cancel attack then dash
-        if(_currentMovementState != MovementState.Attacking)
+        if(_currentBehavior != BehaviorState.ATTACK)
         {
             if (_playerData.DashIsReady)
             {
@@ -93,14 +93,14 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     private void StartDashing()
     {
         _graphAnimator.SetBool("Dashing", true);
-        _currentMovementState = MovementState.Dashing;
+        _currentBehavior = BehaviorState.DASH;
         _playerData.DashIsReady = false;
     }
 
     private void StopDashing()
     {
         _graphAnimator.SetBool("Dashing", false);
-        _currentMovementState = MovementState.Idling;
+        _currentBehavior = BehaviorState.IDLE;
         ////If movement input is pressed we directly start using it
         if (_controlsMap.Gameplay.Movement.IsPressed())
         {
@@ -115,9 +115,9 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         {
             //Update _movementDirection even while attacking, so we can aim with it
             _movementDirection = direction;
-            if (_currentMovementState != MovementState.Attacking)
+            if (_currentBehavior != BehaviorState.ATTACK)
             {
-                _currentMovementState = MovementState.Moving;
+                _currentBehavior = BehaviorState.MOVE;
                 _graphAnimator.SetBool("Running", true);
             }
         }
@@ -126,17 +126,17 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     public void StopReadMovementDirection()
     {
         //Don't do when attacking because it's already done at the start of the attack
-        if (_currentMovementState != MovementState.Attacking)
+        if (_currentBehavior != BehaviorState.ATTACK)
         {
-            _currentMovementState = MovementState.Idling;
+            _currentBehavior = BehaviorState.IDLE;
             _graphAnimator.SetBool("Running", false);
         }
         //Still notify this to update new LastStickDirection
         event_inputMovementIsStopped.Invoke();
     }
 
-    public enum MovementState
+    public enum BehaviorState
     {
-        Idling, Moving, Dashing, Attacking
+        IDLE, MOVE, DASH, ATTACK
     }
 }
