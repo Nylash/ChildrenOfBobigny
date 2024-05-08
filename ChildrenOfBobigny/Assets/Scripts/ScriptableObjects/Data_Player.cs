@@ -28,6 +28,12 @@ public class Data_Player : ScriptableObject
     [SerializeField] private int _attackDamage = 10;
     #endregion
 
+    #region SPELLS VARIABLES
+    [SerializeField] private Data_Spell _offensiveSpell;
+    [SerializeField] private Data_Spell _defensiveSpell;
+    [SerializeField] private Data_Spell _controlSpell;
+    #endregion
+
     #region UI VARIABLES
     [Header("UI")]
     [SerializeField] private Color _colorDashInCD;
@@ -65,6 +71,9 @@ public class Data_Player : ScriptableObject
     }
 
     public int AttackDamage { get => _attackDamage; set => _attackDamage = value; }
+    public Data_Spell OffensiveSpell { get => _offensiveSpell; set => _offensiveSpell = value; }
+    public Data_Spell DefensiveSpell { get => _defensiveSpell; set => _defensiveSpell = value; }
+    public Data_Spell ControlSpell { get => _controlSpell; set => _controlSpell = value; }
     #endregion
 
     #region EVENTS

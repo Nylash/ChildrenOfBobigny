@@ -2,7 +2,7 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-public class GameMainUI : Singleton<GameMainUI>
+public class UI_GameMain : Singleton<UI_GameMain>
 {
     #region COMPONENTS
     private UIDocument _gameMainUI;

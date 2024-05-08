@@ -71,6 +71,33 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""OffensiveSpell"",
+                    ""type"": ""Button"",
+                    ""id"": ""7d94a37d-02be-46af-8242-31e8937ff231"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""DefensiveSpell"",
+                    ""type"": ""Button"",
+                    ""id"": ""5e9f954b-ad2c-400e-9b00-804fc9a31f02"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
+                },
+                {
+                    ""name"": ""ControlSpell"",
+                    ""type"": ""Button"",
+                    ""id"": ""882ba4be-9667-46e7-9e47-b31697a71ed6"",
+                    ""expectedControlType"": ""Button"",
+                    ""processors"": """",
+                    ""interactions"": """",
+                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -242,7 +269,7 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                 {
                     ""name"": """",
                     ""id"": ""8096ff11-2406-41ae-bb8c-743a65c71cac"",
-                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""path"": ""<Gamepad>/rightShoulder"",
                     ""interactions"": """",
                     ""processors"": """",
                     ""groups"": ""Gamepad"",
@@ -258,6 +285,72 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""groups"": ""Keyboard"",
                     ""action"": ""Attack"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""8fd19bb5-ffe9-4ec5-8fb4-73ffd1152b3c"",
+                    ""path"": ""<Gamepad>/rightTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""OffensiveSpell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""a65c0bc9-1bd0-4cee-aab4-d64f0ce6b362"",
+                    ""path"": ""<Mouse>/rightButton"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""OffensiveSpell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""c3a550f9-0f89-4c45-a309-ea1216074e92"",
+                    ""path"": ""<Gamepad>/leftShoulder"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""DefensiveSpell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""08f70765-218e-4a4f-a92b-20367cc7359c"",
+                    ""path"": ""<Keyboard>/q"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""DefensiveSpell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""ee22fa59-f429-4918-85d5-6b703715925d"",
+                    ""path"": ""<Gamepad>/leftTrigger"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Gamepad"",
+                    ""action"": ""ControlSpell"",
+                    ""isComposite"": false,
+                    ""isPartOfComposite"": false
+                },
+                {
+                    ""name"": """",
+                    ""id"": ""4e911063-f410-4c24-a57e-a005a7e5dae3"",
+                    ""path"": ""<Keyboard>/e"",
+                    ""interactions"": """",
+                    ""processors"": """",
+                    ""groups"": ""Keyboard"",
+                    ""action"": ""ControlSpell"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
                 }
@@ -301,6 +394,9 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         m_Gameplay_AimMouse = m_Gameplay.FindAction("AimMouse", throwIfNotFound: true);
         m_Gameplay_Dash = m_Gameplay.FindAction("Dash", throwIfNotFound: true);
         m_Gameplay_Attack = m_Gameplay.FindAction("Attack", throwIfNotFound: true);
+        m_Gameplay_OffensiveSpell = m_Gameplay.FindAction("OffensiveSpell", throwIfNotFound: true);
+        m_Gameplay_DefensiveSpell = m_Gameplay.FindAction("DefensiveSpell", throwIfNotFound: true);
+        m_Gameplay_ControlSpell = m_Gameplay.FindAction("ControlSpell", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -367,6 +463,9 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
     private readonly InputAction m_Gameplay_AimMouse;
     private readonly InputAction m_Gameplay_Dash;
     private readonly InputAction m_Gameplay_Attack;
+    private readonly InputAction m_Gameplay_OffensiveSpell;
+    private readonly InputAction m_Gameplay_DefensiveSpell;
+    private readonly InputAction m_Gameplay_ControlSpell;
     public struct GameplayActions
     {
         private @ControlsMap m_Wrapper;
@@ -376,6 +475,9 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         public InputAction @AimMouse => m_Wrapper.m_Gameplay_AimMouse;
         public InputAction @Dash => m_Wrapper.m_Gameplay_Dash;
         public InputAction @Attack => m_Wrapper.m_Gameplay_Attack;
+        public InputAction @OffensiveSpell => m_Wrapper.m_Gameplay_OffensiveSpell;
+        public InputAction @DefensiveSpell => m_Wrapper.m_Gameplay_DefensiveSpell;
+        public InputAction @ControlSpell => m_Wrapper.m_Gameplay_ControlSpell;
         public InputActionMap Get() { return m_Wrapper.m_Gameplay; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -400,6 +502,15 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
             @Attack.started += instance.OnAttack;
             @Attack.performed += instance.OnAttack;
             @Attack.canceled += instance.OnAttack;
+            @OffensiveSpell.started += instance.OnOffensiveSpell;
+            @OffensiveSpell.performed += instance.OnOffensiveSpell;
+            @OffensiveSpell.canceled += instance.OnOffensiveSpell;
+            @DefensiveSpell.started += instance.OnDefensiveSpell;
+            @DefensiveSpell.performed += instance.OnDefensiveSpell;
+            @DefensiveSpell.canceled += instance.OnDefensiveSpell;
+            @ControlSpell.started += instance.OnControlSpell;
+            @ControlSpell.performed += instance.OnControlSpell;
+            @ControlSpell.canceled += instance.OnControlSpell;
         }
 
         private void UnregisterCallbacks(IGameplayActions instance)
@@ -419,6 +530,15 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
             @Attack.started -= instance.OnAttack;
             @Attack.performed -= instance.OnAttack;
             @Attack.canceled -= instance.OnAttack;
+            @OffensiveSpell.started -= instance.OnOffensiveSpell;
+            @OffensiveSpell.performed -= instance.OnOffensiveSpell;
+            @OffensiveSpell.canceled -= instance.OnOffensiveSpell;
+            @DefensiveSpell.started -= instance.OnDefensiveSpell;
+            @DefensiveSpell.performed -= instance.OnDefensiveSpell;
+            @DefensiveSpell.canceled -= instance.OnDefensiveSpell;
+            @ControlSpell.started -= instance.OnControlSpell;
+            @ControlSpell.performed -= instance.OnControlSpell;
+            @ControlSpell.canceled -= instance.OnControlSpell;
         }
 
         public void RemoveCallbacks(IGameplayActions instance)
@@ -461,5 +581,8 @@ public partial class @ControlsMap: IInputActionCollection2, IDisposable
         void OnAimMouse(InputAction.CallbackContext context);
         void OnDash(InputAction.CallbackContext context);
         void OnAttack(InputAction.CallbackContext context);
+        void OnOffensiveSpell(InputAction.CallbackContext context);
+        void OnDefensiveSpell(InputAction.CallbackContext context);
+        void OnControlSpell(InputAction.CallbackContext context);
     }
 }

@@ -20,6 +20,9 @@ MonoBehaviour:
   _dashDuration: 0.3
   _attackSpeed: 1.701
   _attackDamage: 10
+  _offensiveSpell: {fileID: 11400000, guid: 0c6ec26f7e681334b82664f07f9aab25, type: 2}
+  _defensiveSpell: {fileID: 0}
+  _controlSpell: {fileID: 0}
   _colorDashInCD: {r: 0.7568628, g: 0.7568628, b: 0.7568628, a: 1}
   _colorDashReady: {r: 0.29615685, g: 0.7735849, b: 0.28826985, a: 1}
   event_dashAvailabilityUpdated:

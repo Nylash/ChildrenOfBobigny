@@ -73,7 +73,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     }
 
     //Animation event at the end of the last attack
-    public void AttackFinishing()
+    public void FinishAttack()
     {
         StopAttacking();
         AttackedFinished();

@@ -2,20 +2,27 @@ using UnityEngine;
 
 public class PlayerAnimationEvents : MonoBehaviour
 {
-    [SerializeField] private PlayerAttackManager _attackManager;
-
+    #region ATTACK EVENTS
     public void IsAttackCancelled()
     {
-        _attackManager.IsAttackCancelled();
+        PlayerAttackManager.Instance.IsAttackCancelled();
     }
 
-    public void AttackFinishing()
+    public void FinishAttack()
     {
-        _attackManager.AttackFinishing();
+        PlayerAttackManager.Instance.FinishAttack();
     }
 
     public void StartNewAttack()
     {
-        _attackManager.StartNewAttack();
+        PlayerAttackManager.Instance.StartNewAttack();
     }
+    #endregion
+
+    #region SPELL EVENTS
+    public void FinishCastingSpell()
+    {
+        PlayerSpellsManager.Instance.FinishCastingSpell();
+    }
+    #endregion
 }

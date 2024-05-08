@@ -67,8 +67,8 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private IEnumerator Dashing()
     {
-        //Prevent dashing while attacking TODO : Instead this, cancel attack then dash
-        if(_currentBehavior != BehaviorState.ATTACK)
+        //Prevent dashing while attacking/casting TODO : Instead this, cancel attack then dash
+        if(_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
         {
             if (_playerData.DashIsReady)
             {
@@ -115,7 +115,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         {
             //Update _movementDirection even while attacking, so we can aim with it
             _movementDirection = direction;
-            if (_currentBehavior != BehaviorState.ATTACK)
+            if (_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
             {
                 _currentBehavior = BehaviorState.MOVE;
                 _graphAnimator.SetBool("Running", true);
@@ -125,8 +125,8 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     public void StopReadMovementDirection()
     {
-        //Don't do when attacking because it's already done at the start of the attack
-        if (_currentBehavior != BehaviorState.ATTACK)
+        //Prevent switch behavior by canceling movement input
+        if (_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
         {
             _currentBehavior = BehaviorState.IDLE;
             _graphAnimator.SetBool("Running", false);
@@ -137,6 +137,6 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     public enum BehaviorState
     {
-        IDLE, MOVE, DASH, ATTACK
+        IDLE, MOVE, DASH, ATTACK, CAST
     }
 }
