@@ -7,9 +7,9 @@ using UnityEngine.Events;
 [CreateAssetMenu(menuName = "Scriptable Objects/Basic Enemy Data")]
 public class Data_BasicEnemy : ScriptableObject
 {
-    [SerializeField] private int _maxHP;
+    [SerializeField] private float _maxHP;
 
     #region ACCESSORS
-    public int MaxHP { get => _maxHP;}
+    public float MaxHP { get => _maxHP;}
     #endregion
 }

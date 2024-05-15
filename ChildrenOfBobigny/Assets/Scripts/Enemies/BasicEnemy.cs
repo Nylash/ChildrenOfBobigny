@@ -9,7 +9,7 @@ public class BasicEnemy : MonoBehaviour
     #endregion
 
     #region VARIABLES
-    private int _HP;
+    private float _HP;
     #region ACCESSORS
 
     #endregion
@@ -26,7 +26,7 @@ public class BasicEnemy : MonoBehaviour
         UpdateHPBar();
     }
 
-    public void TakeDamage(int damage)
+    public void TakeDamage(float damage)
     {
         _HP -= damage;
         UpdateHPBar();
@@ -38,7 +38,7 @@ public class BasicEnemy : MonoBehaviour
 
     private void UpdateHPBar()
     {
-        _HPBarFill.fillAmount = (float) _HP / _enemyData.MaxHP;
+        _HPBarFill.fillAmount = _HP / _enemyData.MaxHP;
         if (_HPBarFill.fillAmount < 1)
             _HPBar.SetActive(true);
     }

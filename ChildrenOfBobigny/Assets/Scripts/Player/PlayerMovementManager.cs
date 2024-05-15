@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.SceneManagement;
 
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
@@ -47,6 +46,8 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         _controlsMap.Gameplay.Dash.performed += ctx => StartCoroutine(Dashing());
 
         _controller = GetComponent<CharacterController>();
+
+        _playerData.DashIsReady = true;
     }
 
     private void Update()

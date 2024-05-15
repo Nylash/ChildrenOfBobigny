@@ -1,6 +1,3 @@
-using System.ComponentModel;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Unity.Collections;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -9,18 +6,23 @@ using UnityEngine.Events;
 /// </summary>
 public class Data_Spell : ScriptableObject
 {
+    #region CONFIGURATION
+    [Header("GLOBAL INFO")]
     [SerializeField] private string _spellName;
-
     [SerializeField] private SpellType _spellType;
-
     [SerializeField, ReadOnly] protected SpellBehavior _spellBehavior;
 
-    /*[SerializeField] private int _damage;*/
+    [Header("CONSTRAINTS")]
+    [SerializeField] private float _CD;
+    [SerializeField] private float _manaCost;
+    #endregion
 
     #region ACCESSORS
-    public string SpellName { get => _spellName; set => _spellName = value; }
-    public SpellType CurrentSpellType { get => _spellType; set => _spellType = value; }
-    public SpellBehavior CurrentSpellBehavior { get => _spellBehavior; set => _spellBehavior = value; }
+    public string SpellName { get => _spellName; }
+    public SpellType CurrentSpellType { get => _spellType; }
+    public SpellBehavior CurrentSpellBehavior { get => _spellBehavior; }
+    public float CD { get => _CD; }
+    public float ManaCost { get => _manaCost; }
     #endregion
 
     public enum SpellType

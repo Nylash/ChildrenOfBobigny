@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using static Data_Spell;
 using static PlayerMovementManager;
@@ -19,7 +20,6 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     #region CONFIGURATION
     [Header("CONFIGURATION")]
     [SerializeField] private Data_Player _playerData;
-    [SerializeField] private GameObject _emptySpell;
     #endregion
 
     private void OnEnable()
@@ -40,17 +40,20 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
         _controlsMap.Gameplay.OffensiveSpell.performed += ctx => OffensiveSpell();
         _controlsMap.Gameplay.DefensiveSpell.performed += ctx => DefensiveSpell();
         _controlsMap.Gameplay.ControlSpell.performed += ctx => ControlSpell();
+
+        _playerData.CurrentMP = _playerData.MaxMP;
+        _playerData.OffensiveSpellInCD = false;
+        _playerData.DefensiveSpellInCD = false;
+        _playerData.ControlSpellInCD = false;
     }
 
     private void OffensiveSpell()
     {
-        if (InitCastingSpell())
+        if (InitCastingSpell(_playerData.OffensiveSpell))
         {
-            GameObject _currentSpell = new GameObject();
-            Spell _currentSpellScript = _currentSpell.AddComponent(GetSpellBehaviorType(_playerData.OffensiveSpell.CurrentSpellBehavior)) as Spell;
-            _currentSpellScript.Init(_playerData.OffensiveSpell as dynamic);
+            CastSpell(_playerData.OffensiveSpell);
         }
-        return;
+        //else spell can't be launch
     }
 
     private void DefensiveSpell()
@@ -63,18 +66,36 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
 
     }
 
-    private bool InitCastingSpell()
+    private bool InitCastingSpell(Data_Spell spell)
     {
         //Prevent casting while dashing
-        if (PlayerMovementManager.Instance.CurrentMovementState != BehaviorState.DASH)
-        {
-            _graphAnimator.SetTrigger("CastingSpell");
-            //Prevent moving while casting
-            PlayerMovementManager.Instance.StopReadMovementDirection();
-            PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.CAST;
-            return true;
-        }
-        return false;
+        if (PlayerMovementManager.Instance.CurrentMovementState == BehaviorState.DASH)
+            return false;
+        //Mana check
+        if (_playerData.CurrentMP - spell.ManaCost < 0)
+            return false;
+        //CD check
+        if (IsSpellInCD(spell))
+            return false;
+
+        _graphAnimator.SetTrigger("CastingSpell");
+        //Prevent moving while casting
+        PlayerMovementManager.Instance.StopReadMovementDirection();
+        PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.CAST;
+
+        StartCoroutine(SpellCD(spell));
+        _playerData.CurrentMP -= spell.ManaCost;
+
+        return true;
+    }
+
+    //Actually cast the spell, by calling associated Init method
+    private void CastSpell(Data_Spell spell)
+    {
+        GameObject _currentSpell = new GameObject();
+        _currentSpell.transform.position = transform.position;
+        Spell _currentSpellScript = _currentSpell.AddComponent(GetSpellBehaviorType(spell)) as Spell;
+        _currentSpellScript.Init(spell as dynamic);//Dynamic is used to call good Init method from abstract class Spell
     }
 
     public void FinishCastingSpell()
@@ -93,11 +114,47 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
         }
     }
 
-    private System.Type GetSpellBehaviorType(Data_Spell.SpellBehavior behavior)
+    private IEnumerator SpellCD(Data_Spell spell)
     {
-        return behavior switch
+        switch (spell.CurrentSpellType)
+        {
+            case SpellType.OFFENSIVE:
+                _playerData.OffensiveSpellInCD = true;
+                yield return new WaitForSeconds(spell.CD);
+                _playerData.OffensiveSpellInCD = false;
+                break;
+            case SpellType.DEFENSIVE:
+                _playerData.DefensiveSpellInCD = true;
+                yield return new WaitForSeconds(spell.CD);
+                _playerData.DefensiveSpellInCD = false;
+                break;
+            case SpellType.CONTROL:
+                _playerData.ControlSpellInCD = true;
+                yield return new WaitForSeconds(spell.CD);
+                _playerData.ControlSpellInCD = false;
+                break;
+        }
+    }
+
+    private bool IsSpellInCD(Data_Spell spell)
+    {
+        //Condensed switch
+        return spell.CurrentSpellType switch
+        {
+            SpellType.OFFENSIVE => _playerData.OffensiveSpellInCD,
+            SpellType.DEFENSIVE => _playerData.DefensiveSpellInCD,
+            SpellType.CONTROL => _playerData.ControlSpellInCD,
+            _ => true
+        } ;
+    }
+
+    private System.Type GetSpellBehaviorType(Data_Spell spell)
+    {
+        //Condensed switch
+        return spell.CurrentSpellBehavior switch
         {
             SpellBehavior.PROJECTILE => typeof(ProjectileSpell),
+            //SpellBehavior.XXX => typeof(XXXSpell),
             _ => null,
         };
     }

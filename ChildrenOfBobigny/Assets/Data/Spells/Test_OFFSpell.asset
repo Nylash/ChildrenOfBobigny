@@ -15,3 +15,9 @@ MonoBehaviour:
   _spellName: BOULE DE FEU
   _spellType: 0
   _spellBehavior: 0
+  _CD: 2
+  _manaCost: 25
+  _projectileObject: {fileID: 8028217060172309498, guid: b7503fd21c07def48aee7ec427f0fb37, type: 3}
+  _speed: 1000
+  _range: 10
+  _damage: 10
