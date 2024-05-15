@@ -47,6 +47,7 @@ public class Data_Player : ScriptableObject
     [Header("UI")]
     [SerializeField] private Color _colorDashInCD;
     [SerializeField] private Color _colorDashReady;
+    [SerializeField] private Color _tintSpellInCD;
     #endregion
 
     #region RUNTIME VARIABLES
@@ -132,6 +133,7 @@ public class Data_Player : ScriptableObject
             event_controlSpellCDUpdated.Invoke(_controlSpellInCD);
         }
     }
+    public Color TintSpellInCD { get => _tintSpellInCD; }
     #endregion
 
     #region EVENTS

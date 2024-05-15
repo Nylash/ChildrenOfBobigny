@@ -27,6 +27,7 @@ MonoBehaviour:
   _controlSpell: {fileID: 0}
   _colorDashInCD: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   _colorDashReady: {r: 0.29615685, g: 0.7735849, b: 0.28826985, a: 1}
+  _tintSpellInCD: {r: 0.254717, g: 0.254717, b: 0.254717, a: 1}
   event_dashAvailabilityUpdated:
     m_PersistentCalls:
       m_Calls: []

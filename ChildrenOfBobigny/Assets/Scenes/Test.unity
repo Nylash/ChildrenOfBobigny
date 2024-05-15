@@ -1402,6 +1402,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1696777584481620758, guid: 70796aeedf779c6478d180d4f855522c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: c2b53281349e5444f9e86d62febd4646, type: 3}
     - target: {fileID: 2205240630619086130, guid: 70796aeedf779c6478d180d4f855522c, type: 3}
       propertyPath: m_Pivot.x
       value: 0
@@ -1486,6 +1490,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI_GameMain
       objectReference: {fileID: 0}
+    - target: {fileID: 7762953397897958619, guid: 70796aeedf779c6478d180d4f855522c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: fe1be1c71cb7cca4c82af342872bab7c, type: 3}
+    - target: {fileID: 9172319610718554596, guid: 70796aeedf779c6478d180d4f855522c, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 9d907c0593f389340a001481459cbe90, type: 3}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
