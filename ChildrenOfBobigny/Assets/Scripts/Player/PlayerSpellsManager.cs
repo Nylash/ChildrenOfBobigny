@@ -40,7 +40,10 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
         _controlsMap.Gameplay.OffensiveSpell.performed += ctx => OffensiveSpell();
         _controlsMap.Gameplay.DefensiveSpell.performed += ctx => DefensiveSpell();
         _controlsMap.Gameplay.ControlSpell.performed += ctx => ControlSpell();
+    }
 
+    private void Start()
+    {
         _playerData.CurrentMP = _playerData.MaxMP;
         _playerData.OffensiveSpellInCD = false;
         _playerData.DefensiveSpellInCD = false;

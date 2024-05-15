@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1b5971ca9751c248b540a695d451be4, type: 3}
   m_Name: PlayerData
   m_EditorClassIdentifier: 
+  _maxHP: 100
+  _maxMP: 100
   _movementSpeed: 5
   _rotationSpeed: 0.075
   _gravityForce: 9.81
@@ -23,11 +25,26 @@ MonoBehaviour:
   _offensiveSpell: {fileID: 11400000, guid: 0c6ec26f7e681334b82664f07f9aab25, type: 2}
   _defensiveSpell: {fileID: 0}
   _controlSpell: {fileID: 0}
-  _colorDashInCD: {r: 0.7568628, g: 0.7568628, b: 0.7568628, a: 1}
+  _colorDashInCD: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   _colorDashReady: {r: 0.29615685, g: 0.7735849, b: 0.28826985, a: 1}
   event_dashAvailabilityUpdated:
     m_PersistentCalls:
       m_Calls: []
   event_attackSpeedUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentHPUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_currentMPUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_offensiveSpellCDUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_defensiveSpellCDUpdated:
+    m_PersistentCalls:
+      m_Calls: []
+  event_controlSpellCDUpdated:
     m_PersistentCalls:
       m_Calls: []

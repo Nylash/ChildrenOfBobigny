@@ -46,7 +46,10 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         _controlsMap.Gameplay.Dash.performed += ctx => StartCoroutine(Dashing());
 
         _controller = GetComponent<CharacterController>();
+    }
 
+    private void Start()
+    {
         _playerData.DashIsReady = true;
     }
 

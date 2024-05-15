@@ -50,7 +50,7 @@ public class Data_Player : ScriptableObject
     #endregion
 
     #region RUNTIME VARIABLES
-    //Be sure to reset those variables at the start of the game if needed
+    //Be sure to reset those variables at the start of the game if needed (do it on Start so event are listened)
     [Header("RUNTIME")]
     private bool _dashIsReady;
     private float _currentHP;

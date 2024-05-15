@@ -1,17 +1,18 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.UIElements;
+using UnityEngine.UI;
 
 public class UI_GameMain : Singleton<UI_GameMain>
 {
     #region COMPONENTS
-    private UIDocument _gameMainUI;
+    //private UIDocument _gameMainUI;
+    [SerializeField] private Image _healthBarProgress;
+    [SerializeField] private Image _manaBarProgress;
+    [SerializeField] private Image _dashBarProgress;
     #endregion
 
     #region VARIABLES
-    private ProgressBar _healthBar;
-    private ProgressBar _manaBar;
-    private ProgressBar _dashBar;
+
     #endregion
 
     #region CONFIGURATION
@@ -19,53 +20,46 @@ public class UI_GameMain : Singleton<UI_GameMain>
     [SerializeField] private Data_Player _playerData;
     #endregion
 
-    protected override void OnAwake()
-    {
-        _gameMainUI = GetComponent<UIDocument>();
-        _healthBar = _gameMainUI.rootVisualElement.Q("HealthBar") as ProgressBar;
-        _manaBar = _gameMainUI.rootVisualElement.Q("ManaBar") as ProgressBar;
-        _dashBar = _gameMainUI.rootVisualElement.Q("DashBar") as ProgressBar;
-
-        _dashBar.Q(className: "unity-progress-bar__progress").style.backgroundColor = _playerData.ColorDashReady;
-    }
 
     private void OnEnable()
     {
         _playerData.event_dashAvailabilityUpdated.AddListener(SwitchDashStatus);
+        _playerData.event_currentMPUpdated.AddListener(UpdateManaBar);
     }
 
     private void OnDisable()
     {
         if (!this.gameObject.scene.isLoaded) return;
         _playerData.event_dashAvailabilityUpdated.RemoveListener(SwitchDashStatus);
+        _playerData.event_currentMPUpdated.RemoveListener(UpdateManaBar);
     }
 
-    private void Start()
+    private void UpdateManaBar(float newMPValue)
     {
-        _dashBar.highValue = _playerData.DashCD;
-        _dashBar.value = _playerData.DashCD;
+        _manaBarProgress.fillAmount = newMPValue / _playerData.MaxMP;
     }
 
     private void SwitchDashStatus(bool dashIsReady)
     {
         if(dashIsReady) 
         {
-            _dashBar.Q(className: "unity-progress-bar__progress").style.backgroundColor = _playerData.ColorDashReady;
+            _dashBarProgress.color = _playerData.ColorDashReady;
             StopCoroutine(FillingDashBar());
         }
         else
         {
-            _dashBar.Q(className: "unity-progress-bar__progress").style.backgroundColor = _playerData.ColorDashInCD;
-            _dashBar.value = 0;
+            _dashBarProgress.color = _playerData.ColorDashInCD;
             StartCoroutine(FillingDashBar());
         }
     }
 
     private IEnumerator FillingDashBar()
     {
+        float timer = 0;
         while (!_playerData.DashIsReady)
         {
-            _dashBar.value += Time.deltaTime;
+            timer += Time.deltaTime;
+            _dashBarProgress.fillAmount = timer / _playerData.DashCD;
             yield return null;
         }
     }

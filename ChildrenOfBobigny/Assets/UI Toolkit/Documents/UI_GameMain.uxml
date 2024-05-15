@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UI%20Toolkit/UI_Style_GameMain.uss?fileID=7433441132597879392&amp;guid=1de36024194e730429f2bb9e8224f47f&amp;type=3#UI_Style_GameMain" />
+    <Style src="project://database/Assets/UI%20Toolkit/Styles/UI_Style_GameMain.uss?fileID=7433441132597879392&amp;guid=1de36024194e730429f2bb9e8224f47f&amp;type=3#UI_Style_GameMain" />
     <ui:VisualElement name="Stats" style="flex-grow: 0; height: 108px; width: 200px; justify-content: flex-start; align-items: flex-start;">
         <ui:VisualElement name="Health" style="width: auto; height: 33.3%; flex-direction: row; margin-bottom: -1px; justify-content: flex-start; align-items: center; max-height: 33.3%; min-height: 33.3%;">
             <ui:ProgressBar name="HealthBar" value="31.48" class="health-bar" style="width: 150px;" />
@@ -7,5 +7,14 @@
         </ui:VisualElement>
         <ui:ProgressBar name="ManaBar" value="30" class="mana-bar" style="width: 150px;" />
         <ui:ProgressBar value="85.5" name="DashBar" class="dash-bar" style="width: 50px;" />
+    </ui:VisualElement>
+    <ui:VisualElement name="Spells" style="width: 200px; height: 120px; max-height: 120px;">
+        <ui:VisualElement name="Binds" style="flex-grow: 1; height: 40px;" />
+        <ui:VisualElement name="Icons" style="flex-grow: 1; height: 40px; flex-direction: row; padding-top: 5px; padding-right: 5px; padding-bottom: 5px; padding-left: 5px;">
+            <ui:VisualElement name="Control" class="spell-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/Spell_ControlIcon.png?fileID=21300000&amp;guid=85027b6a3628d4d4d810862079e5e9d1&amp;type=3#Spell_ControlIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
+            <ui:VisualElement name="Defensive" class="spell-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/Spell_DefensiveIcon.png?fileID=21300000&amp;guid=d9b870d822fb1c74f8aaccf20dc3e558&amp;type=3#Spell_DefensiveIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
+            <ui:VisualElement name="Offensive" class="spell-icon" style="flex-grow: 1; background-image: url(&quot;project://database/Assets/Textures/Spell_OffensiveIcon.png?fileID=21300000&amp;guid=e4690e1a1f900c342acbb6a03b4c43ca&amp;type=3#Spell_OffensiveIcon&quot;); -unity-background-scale-mode: scale-to-fit;" />
+        </ui:VisualElement>
+        <ui:VisualElement name="CD" style="flex-grow: 1; height: 20px; flex-direction: column;" />
     </ui:VisualElement>
 </ui:UXML>
