@@ -98,6 +98,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
         GameObject _currentSpell = new GameObject();
         _currentSpell.transform.position = transform.position;
         Spell _currentSpellScript = _currentSpell.AddComponent(GetSpellBehaviorType(spell)) as Spell;
+        _currentSpellScript.Direction = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
         _currentSpellScript.Init(spell as dynamic);//Dynamic is used to call good Init method from abstract class Spell
     }
 

@@ -3,26 +3,30 @@ using UnityEngine;
 public class ProjectileSpell : Spell
 {
     private Rigidbody _rb;
-    private Vector3 _direction;
     private Data_Spell_Projectile _spellData;
     private Vector3 _birthPlace;
-    private float _timerTrajectory;
+    private bool _initDone;
 
     public override void Init(Data_Spell_Projectile spellData)
     {
         _spellData = spellData;
 
         Instantiate(_spellData.ProjectileObject, transform);
-        _direction = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
+
         _rb = gameObject.AddComponent<Rigidbody>();
         _rb.useGravity = false;
-        _rb.velocity = _spellData.Speed * Time.deltaTime * _direction;
+        _rb.velocity = _spellData.Speed * Time.deltaTime * Direction;
 
         _birthPlace = transform.position;
+
+        _initDone = true;
     }
 
     private void Update()
     {
+        if (!_initDone)
+            return;
+
         if (Vector3.Distance(_birthPlace, transform.position) > _spellData.Range)
         {
             KillProjectile();
@@ -31,7 +35,7 @@ public class ProjectileSpell : Spell
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Enemy"))
+        if (collision.gameObject.CompareTag("Unit"))
         {
             collision.gameObject.GetComponent<BasicEnemy>().TakeDamage(_spellData.Damage);
             KillProjectile();
