@@ -32,6 +32,6 @@ public class Data_Spell : ScriptableObject
 
     public enum SpellBehavior
     {
-        PROJECTILE
+        PROJECTILE, SHIELD
     }
 }

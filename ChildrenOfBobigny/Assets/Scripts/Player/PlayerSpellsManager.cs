@@ -20,6 +20,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     #region CONFIGURATION
     [Header("CONFIGURATION")]
     [SerializeField] private Data_Player _playerData;
+    [SerializeField, Layer] private int _spellLayer;
     #endregion
 
     private void OnEnable()
@@ -61,7 +62,11 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
 
     private void DefensiveSpell()
     {
-
+        if (InitCastingSpell(_playerData.DefensiveSpell))
+        {
+            CastSpell(_playerData.DefensiveSpell);
+        }
+        //else spell can't be launch
     }
 
     private void ControlSpell()
@@ -96,6 +101,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     private void CastSpell(Data_Spell spell)
     {
         GameObject _currentSpell = new GameObject();
+        _currentSpell.layer = _spellLayer;
         _currentSpell.transform.position = transform.position;
         Spell _currentSpellScript = _currentSpell.AddComponent(GetSpellBehaviorType(spell)) as Spell;
         _currentSpellScript.Direction = new Vector3(PlayerAimManager.Instance.AimDirection.x, 0, PlayerAimManager.Instance.AimDirection.y);
@@ -158,7 +164,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
         return spell.CurrentSpellBehavior switch
         {
             SpellBehavior.PROJECTILE => typeof(ProjectileSpell),
-            //SpellBehavior.XXX => typeof(XXXSpell),
+            SpellBehavior.SHIELD => typeof(ShieldSpell),
             _ => null,
         };
     }

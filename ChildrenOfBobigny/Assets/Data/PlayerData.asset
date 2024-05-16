@@ -23,7 +23,7 @@ MonoBehaviour:
   _attackSpeed: 1.701
   _attackDamage: 10
   _offensiveSpell: {fileID: 11400000, guid: 0c6ec26f7e681334b82664f07f9aab25, type: 2}
-  _defensiveSpell: {fileID: 0}
+  _defensiveSpell: {fileID: 11400000, guid: 5b6fd39ac28791347bf0e6459b290556, type: 2}
   _controlSpell: {fileID: 0}
   _colorDashInCD: {r: 0.6415094, g: 0.6415094, b: 0.6415094, a: 1}
   _colorDashReady: {r: 0.29615685, g: 0.7735849, b: 0.28826985, a: 1}

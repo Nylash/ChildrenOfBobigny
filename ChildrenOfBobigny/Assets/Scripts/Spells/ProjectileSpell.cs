@@ -2,16 +2,17 @@ using UnityEngine;
 
 public class ProjectileSpell : Spell
 {
-    private Rigidbody _rb;
     private Data_Spell_Projectile _spellData;
+    private Rigidbody _rb;
     private Vector3 _birthPlace;
-    private bool _initDone;
 
-    public override void Init(Data_Spell_Projectile spellData)
+    public override void Init(Data_Spell_Projectile data)
     {
-        _spellData = spellData;
+        _spellData = data;
 
         Instantiate(_spellData.ProjectileObject, transform);
+
+        SetLayers(gameObject, gameObject.layer);
 
         _rb = gameObject.AddComponent<Rigidbody>();
         _rb.useGravity = false;
@@ -29,20 +30,31 @@ public class ProjectileSpell : Spell
 
         if (Vector3.Distance(_birthPlace, transform.position) > _spellData.Range)
         {
-            KillProjectile();
+            DestroySpell();
         }
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.CompareTag("Unit"))
+        switch (collision.gameObject.tag)
         {
-            collision.gameObject.GetComponent<BasicEnemy>().TakeDamage(_spellData.Damage);
-            KillProjectile();
+            case "Unit":
+                collision.gameObject.GetComponent<BasicEnemy>().TakeDamage(_spellData.Damage);
+                DestroySpell();
+                break;
+            case "Player":
+                PlayerHealthManager.Instance.TakeDamage(_spellData.Damage);
+                DestroySpell();
+                break;
+            case "Shield":
+                DestroySpell();
+                break;
+            default:
+                break;
         }
     }
 
-    private void KillProjectile()
+    public void DestroySpell()
     {
         Destroy(gameObject);
     }
