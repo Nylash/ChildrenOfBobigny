@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Utilities;
 
 [CreateAssetMenu(menuName = "Scriptable Objects/Projectile Spell Data")]
 public class Data_Spell_Projectile : Data_Spell

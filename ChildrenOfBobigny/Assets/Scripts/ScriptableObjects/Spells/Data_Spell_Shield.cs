@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Utilities;
 
 [CreateAssetMenu(menuName = "Scriptable Objects/Shield Spell Data")]
 public class Data_Spell_Shield : Data_Spell

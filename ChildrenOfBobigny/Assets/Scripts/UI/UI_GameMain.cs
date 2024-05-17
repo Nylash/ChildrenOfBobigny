@@ -1,7 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
-using static Data_Spell;
+using static Utilities;
 
 public class UI_GameMain : Singleton<UI_GameMain>
 {

@@ -24,14 +24,4 @@ public abstract class Spell : MonoBehaviour
     {
         throw new NotImplementedException();
     }
-
-    //Called right before init is finished to have the right layer on every children
-    protected void SetLayers(GameObject go, int layerNumber)
-    {
-        if (go == null) return;
-        foreach (Transform trans in go.GetComponentsInChildren<Transform>(true))
-        {
-            trans.gameObject.layer = layerNumber;
-        }
-    }
 }

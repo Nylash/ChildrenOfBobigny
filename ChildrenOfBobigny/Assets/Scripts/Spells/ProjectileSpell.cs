@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Utilities;
 
 public class ProjectileSpell : Spell
 {
@@ -18,7 +19,7 @@ public class ProjectileSpell : Spell
 
         _birthPlace = transform.position;
 
-        SetLayers(gameObject, gameObject.layer);
+        SetChildsLayers(gameObject, gameObject.layer);
         _initDone = true;
     }
 

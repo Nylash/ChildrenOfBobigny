@@ -1,4 +1,5 @@
 using UnityEngine;
+using static Utilities;
 
 public class ShieldSpell : Spell
 {
@@ -29,7 +30,7 @@ public class ShieldSpell : Spell
 
         _birthTime = Time.time;
 
-        SetLayers(gameObject, gameObject.layer);
+        SetChildsLayers(gameObject, gameObject.layer);
         _initDone = true;
     }
 

@@ -1,5 +1,5 @@
 using UnityEngine;
-using UnityEngine.Events;
+using static Utilities;
 
 /// <summary>
 /// This SO is used to balance spells, value can be modified by skills
@@ -24,14 +24,4 @@ public abstract class Data_Spell : ScriptableObject
     public float CD { get => _CD; }
     public float ManaCost { get => _manaCost; }
     #endregion
-
-    public enum SpellType
-    {
-        OFFENSIVE, DEFENSIVE, CONTROL
-    }
-
-    public enum SpellBehavior
-    {
-        PROJECTILE, SHIELD
-    }
 }

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using static Utilities;
 
 public class PlayerAimManager : Singleton<PlayerAimManager>
 {
@@ -51,7 +52,7 @@ public class PlayerAimManager : Singleton<PlayerAimManager>
 
     private void Update()
     {
-        if(PlayerMovementManager.Instance.CurrentMovementState != PlayerMovementManager.BehaviorState.DASH)
+        if(PlayerMovementManager.Instance.CurrentMovementState != PlayerBehaviorState.DASH)
         {
             //Get direction from mouse position if player is currently using Keyboard control scheme
             if (_playerInput.currentControlScheme == "Keyboard")

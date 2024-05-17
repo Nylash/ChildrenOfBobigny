@@ -1,6 +1,7 @@
 using System.Collections;
 using UnityEngine;
 using UnityEngine.Events;
+using static Utilities;
 
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
@@ -11,11 +12,11 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #endregion
 
     #region VARIABLES
-    private BehaviorState _currentBehavior = BehaviorState.IDLE;
+    private PlayerBehaviorState _currentBehavior = PlayerBehaviorState.IDLE;
     private Vector2 _movementDirection;
 
     #region ACCESSORS
-    public BehaviorState CurrentMovementState { get => _currentBehavior; set => _currentBehavior = value; }
+    public PlayerBehaviorState CurrentMovementState { get => _currentBehavior; set => _currentBehavior = value; }
     public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
     #endregion
@@ -57,13 +58,13 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     {
         //Basic movement using Unity CharacterController, and apply gravity on Y to avoid floating
         //Then set Angle float in running blend tree (angle between _movementDirection and AimDirection)
-        if (_currentBehavior == BehaviorState.MOVE)
+        if (_currentBehavior == PlayerBehaviorState.MOVE)
         {
             _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
         //Always applying gravity, also when not moving, only exception is while dashing
-        else if (_currentBehavior != BehaviorState.DASH && !_controller.isGrounded)
+        else if (_currentBehavior != PlayerBehaviorState.DASH && !_controller.isGrounded)
         {
             _controller.Move(new Vector3(0, -_playerData.GravityForce, 0) * _playerData.MovementSpeed * Time.deltaTime);
         }
@@ -72,7 +73,7 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     private IEnumerator Dashing()
     {
         //Prevent dashing while attacking/casting TODO : Instead this, cancel attack then dash
-        if(_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
+        if(_currentBehavior != PlayerBehaviorState.ATTACK && _currentBehavior != PlayerBehaviorState.CAST)
         {
             if (_playerData.DashIsReady)
             {
@@ -97,14 +98,14 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     private void StartDashing()
     {
         _graphAnimator.SetBool("Dashing", true);
-        _currentBehavior = BehaviorState.DASH;
+        _currentBehavior = PlayerBehaviorState.DASH;
         _playerData.DashIsReady = false;
     }
 
     private void StopDashing()
     {
         _graphAnimator.SetBool("Dashing", false);
-        _currentBehavior = BehaviorState.IDLE;
+        _currentBehavior = PlayerBehaviorState.IDLE;
         ////If movement input is pressed we directly start using it
         if (_controlsMap.Gameplay.Movement.IsPressed())
         {
@@ -119,9 +120,9 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
         {
             //Update _movementDirection even while attacking, so we can aim with it
             _movementDirection = direction;
-            if (_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
+            if (_currentBehavior != PlayerBehaviorState.ATTACK && _currentBehavior != PlayerBehaviorState.CAST)
             {
-                _currentBehavior = BehaviorState.MOVE;
+                _currentBehavior = PlayerBehaviorState.MOVE;
                 _graphAnimator.SetBool("Running", true);
             }
         }
@@ -130,17 +131,12 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     public void StopReadMovementDirection()
     {
         //Prevent switch behavior by canceling movement input
-        if (_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
+        if (_currentBehavior != PlayerBehaviorState.ATTACK && _currentBehavior != PlayerBehaviorState.CAST)
         {
-            _currentBehavior = BehaviorState.IDLE;
+            _currentBehavior = PlayerBehaviorState.IDLE;
             _graphAnimator.SetBool("Running", false);
         }
         //Still notify this to update new LastStickDirection
         event_inputMovementIsStopped.Invoke();
-    }
-
-    public enum BehaviorState
-    {
-        IDLE, MOVE, DASH, ATTACK, CAST
     }
 }

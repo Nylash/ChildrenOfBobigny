@@ -1,7 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using static Data_Spell;
-using static PlayerMovementManager;
+using static Utilities;
 
 public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
 {
@@ -77,7 +76,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     private bool InitCastingSpell(Data_Spell spell)
     {
         //Prevent casting while dashing
-        if (PlayerMovementManager.Instance.CurrentMovementState == BehaviorState.DASH)
+        if (PlayerMovementManager.Instance.CurrentMovementState == PlayerBehaviorState.DASH)
             return false;
         //Mana check
         if (_playerData.CurrentMP - spell.ManaCost < 0)
@@ -89,7 +88,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
         _graphAnimator.SetTrigger("CastingSpell");
         //Prevent moving while casting
         PlayerMovementManager.Instance.StopReadMovementDirection();
-        PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.CAST;
+        PlayerMovementManager.Instance.CurrentMovementState = PlayerBehaviorState.CAST;
 
         StartCoroutine(SpellCD(spell));
         _playerData.CurrentMP -= spell.ManaCost;
@@ -111,7 +110,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     public void FinishCastingSpell()
     {
 
-        PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.IDLE;
+        PlayerMovementManager.Instance.CurrentMovementState = PlayerBehaviorState.IDLE;
         /*
          * TODO If all spells have CD this is not needed. But if each category of spell has potentially no CD we need to check the 3 inputs
         */
@@ -159,16 +158,5 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
             SpellType.CONTROL => _playerData.ControlSpellInCD,
             _ => true
         } ;
-    }
-
-    private System.Type GetSpellBehaviorType(Data_Spell spell)
-    {
-        //Condensed switch
-        return spell.CurrentSpellBehavior switch
-        {
-            SpellBehavior.PROJECTILE => typeof(ProjectileSpell),
-            SpellBehavior.SHIELD => typeof(ShieldSpell),
-            _ => null,
-        };
     }
 }

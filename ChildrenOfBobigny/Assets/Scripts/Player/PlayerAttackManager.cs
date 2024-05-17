@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
-using static PlayerMovementManager;
+using static Utilities;
 
 public class PlayerAttackManager : Singleton<PlayerAttackManager>
 {
@@ -49,12 +49,12 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     private void StartAttacking()
     {
         //Prevent attacking while dashing
-        if(PlayerMovementManager.Instance.CurrentMovementState != BehaviorState.DASH)
+        if(PlayerMovementManager.Instance.CurrentMovementState != PlayerBehaviorState.DASH)
         {
             _graphAnimator.SetBool("Attacking", true);
             //Prevent moving while attacking
             PlayerMovementManager.Instance.StopReadMovementDirection();
-            PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.ATTACK;
+            PlayerMovementManager.Instance.CurrentMovementState = PlayerBehaviorState.ATTACK;
         }
     }
 
@@ -87,7 +87,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
 
     private void AttackedFinished()
     {
-        PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.IDLE;
+        PlayerMovementManager.Instance.CurrentMovementState = PlayerBehaviorState.IDLE;
         //If attack input still pressed we start attacking right away (remove this or add delay to modify gameplay)
         if (_controlsMap.Gameplay.Attack.IsPressed())
         {
