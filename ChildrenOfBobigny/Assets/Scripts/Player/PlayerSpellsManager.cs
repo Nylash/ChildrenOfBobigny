@@ -100,7 +100,7 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     //Actually cast the spell, by calling associated Init method
     private void CastSpell(Data_Spell spell)
     {
-        GameObject _currentSpell = new GameObject();
+        GameObject _currentSpell = new GameObject("PlayerSpell");
         _currentSpell.layer = _spellLayer;
         _currentSpell.transform.position = transform.position;
         Spell _currentSpellScript = _currentSpell.AddComponent(GetSpellBehaviorType(spell)) as Spell;
@@ -112,6 +112,9 @@ public class PlayerSpellsManager : Singleton<PlayerSpellsManager>
     {
 
         PlayerMovementManager.Instance.CurrentMovementState = BehaviorState.IDLE;
+        /*
+         * TODO If all spells have CD this is not needed. But if each category of spell has potentially no CD we need to check the 3 inputs
+        */
         //If spell input still pressed we start attacking right away
         if (_controlsMap.Gameplay.OffensiveSpell.IsPressed())
         {

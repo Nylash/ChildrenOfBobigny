@@ -21,12 +21,14 @@ public class ShieldSpell : Spell
         {
             Debug.LogError("Shield spell launch without an appropriate layer " + gameObject.name + " (layer : " +  gameObject.layer + ")");
         }
-        SetLayers(gameObject, gameObject.layer);
 
-        Instantiate(_spell_data.ShieldObject, transform);
-        //apply offset and direction for rotation
+        GameObject shield = Instantiate(_spell_data.ShieldObject, transform);
+        shield.transform.localPosition += _spell_data.PositionOffset;
+        transform.Rotate(Vector3.up, Vector3.SignedAngle(transform.forward, Direction, Vector3.up));
 
         _birthTime = Time.time;
+
+        SetLayers(gameObject, gameObject.layer);
         _initDone = true;
     }
 

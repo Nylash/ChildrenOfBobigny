@@ -7,7 +7,7 @@ public class Data_Spell_Shield : Data_Spell
     [Header("SHIELD VARIABLES")]
     [SerializeField] private GameObject _shieldObject;
     [SerializeField] private float _lifetime;
-    [SerializeField] private Vector3 _offset;
+    [SerializeField] private Vector3 _positionOffset;
 
     [Header("LAYER CONFIGURATION")]
     [SerializeField, Layer] private int _playerSpellLayer;
@@ -19,7 +19,7 @@ public class Data_Spell_Shield : Data_Spell
     #region ACCESSORS
     public GameObject ShieldObject { get => _shieldObject; }
     public float Lifetime { get => _lifetime; }
-    public Vector3 Offset { get => _offset; }
+    public Vector3 PositionOffset { get => _positionOffset; }
     public int PlayerSpellLayer { get => _playerSpellLayer; }
     public int PlayerShieldLayer { get => _playerShieldLayer; }
     public int EnemySpellLayer { get => _enemySpellLayer; }

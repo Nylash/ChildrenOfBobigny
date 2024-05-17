@@ -12,14 +12,13 @@ public class ProjectileSpell : Spell
 
         Instantiate(_spellData.ProjectileObject, transform);
 
-        SetLayers(gameObject, gameObject.layer);
-
         _rb = gameObject.AddComponent<Rigidbody>();
         _rb.useGravity = false;
         _rb.velocity = _spellData.Speed * Time.deltaTime * Direction;
 
         _birthPlace = transform.position;
 
+        SetLayers(gameObject, gameObject.layer);
         _initDone = true;
     }
 
