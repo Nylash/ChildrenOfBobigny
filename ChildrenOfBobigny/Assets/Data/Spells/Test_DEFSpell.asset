@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 81f7dd7cbe975b64892c85b7e8a8a552, type: 3}
+  m_Name: Test_DEFSpell
+  m_EditorClassIdentifier: 
+  _spellName: BOUCLIER
+  _spellType: 1
+  _spellBehavior: 1
+  _CD: 3
+  _manaCost: 20
+  _shieldObject: {fileID: 4223250736520968543, guid: d1991da3bfce5e1458e05ae0dd209294, type: 3}
+  _lifetime: 3
+  _positionOffset: {x: 0, y: 0, z: 1}
+  _playerSpellLayer: 7
+  _playerShieldLayer: 13
+  _enemySpellLayer: 10
+  _enemyShieldLayer: 14

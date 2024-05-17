@@ -3,7 +3,12 @@
 --- !u!78 &1
 TagManager:
   serializedVersion: 2
-  tags: []
+  tags:
+  - Unit
+  - Environnement
+  - Spell
+  - Shield
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -11,15 +16,15 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Player
+  - PlayerSpell
+  - PlayerWeapon
+  - Enemy
+  - EnemySpell
+  - EnemyWeapon
+  - Environnement
+  - PlayerShield
+  - EnemyShield
   - 
   - 
   - 

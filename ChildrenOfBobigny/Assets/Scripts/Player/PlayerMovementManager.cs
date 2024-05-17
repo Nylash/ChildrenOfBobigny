@@ -1,6 +1,6 @@
 using System.Collections;
 using UnityEngine;
-using UnityEngine.InputSystem;
+using UnityEngine.Events;
 
 public class PlayerMovementManager : Singleton<PlayerMovementManager>
 {
@@ -11,30 +11,37 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
     #endregion
 
     #region VARIABLES
-    private MovementState _currentMovementState = MovementState.Idling;
+    private BehaviorState _currentBehavior = BehaviorState.IDLE;
     private Vector2 _movementDirection;
-    private Vector2 _dashDirection;
 
-    #region ACCESSEURS
-    public MovementState CurrentMovementState { get => _currentMovementState; }
-    public Vector2 DashDirection { get => _dashDirection; }
+    #region ACCESSORS
+    public BehaviorState CurrentMovementState { get => _currentBehavior; set => _currentBehavior = value; }
     public Vector2 MovementDirection { get => _movementDirection; }
     #endregion
     #endregion
 
     #region CONFIGURATION
     [Header("CONFIGURATION")]
-    [SerializeField] private PlayerData _playerData;
+    [SerializeField] private Data_Player _playerData;
     #endregion
 
-    private void OnEnable() => _controlsMap.Gameplay.Enable();
+    #region EVENTS
+    public UnityEvent event_inputMovementIsStopped;
+    #endregion
+
+    private void OnEnable()
+    {
+        _controlsMap.Gameplay.Enable();
+        if (event_inputMovementIsStopped == null)
+            event_inputMovementIsStopped = new UnityEvent();
+    } 
     private void OnDisable() => _controlsMap.Gameplay.Disable();
 
-    private void Awake()
+    protected override void OnAwake()
     {
         _controlsMap = new ControlsMap();
 
-        _controlsMap.Gameplay.Movement.performed += ctx => ReadMovementDirection(ctx);
+        _controlsMap.Gameplay.Movement.performed += ctx => ReadMovementDirection(ctx.ReadValue<Vector2>().normalized);
         _controlsMap.Gameplay.Movement.canceled += ctx => StopReadMovementDirection();
         _controlsMap.Gameplay.Dash.performed += ctx => StartCoroutine(Dashing());
 
@@ -48,15 +55,15 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private void Update()
     {
-        if(_currentMovementState == MovementState.Moving)
+        //Basic movement using Unity CharacterController, and apply gravity on Y to avoid floating
+        //Then set Angle float in running blend tree (angle between _movementDirection and AimDirection)
+        if (_currentBehavior == BehaviorState.MOVE)
         {
-            if (_controller.isGrounded)
-                _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
-            else
-                _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
+            _controller.Move(new Vector3(_movementDirection.x, -_playerData.GravityForce, _movementDirection.y) * _playerData.MovementSpeed * Time.deltaTime);
             _graphAnimator.SetFloat("Angle", Mathf.Abs(Vector2.Angle(_movementDirection, PlayerAimManager.Instance.AimDirection)));
         }
-        else if (_currentMovementState != MovementState.Dashing && !_controller.isGrounded)
+        //Always applying gravity, also when not moving, only exception is while dashing
+        else if (_currentBehavior != BehaviorState.DASH && !_controller.isGrounded)
         {
             _controller.Move(new Vector3(0, -_playerData.GravityForce, 0) * _playerData.MovementSpeed * Time.deltaTime);
         }
@@ -64,53 +71,76 @@ public class PlayerMovementManager : Singleton<PlayerMovementManager>
 
     private IEnumerator Dashing()
     {
-        if (_playerData.DashIsReady)
+        //Prevent dashing while attacking/casting TODO : Instead this, cancel attack then dash
+        if(_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
         {
-            StartDashing();
-            float startTime = Time.time;
-            while( Time.time < startTime + _playerData.DashDuration) 
+            if (_playerData.DashIsReady)
             {
-                _controller.Move(new Vector3(_dashDirection.x, 0, _dashDirection.y) * _playerData.DashSpeed * Time.deltaTime);
-                yield return null;
+                StartDashing();
+
+                float startTime = Time.time;
+                //Replace Update movement logic by this during DashDuration
+                while (Time.time < startTime + _playerData.DashDuration)
+                {
+                    _controller.Move(new Vector3(_movementDirection.x, 0, _movementDirection.y) * _playerData.DashSpeed * Time.deltaTime);
+                    yield return null;
+                }
+
+                StopDashing();
+
+                yield return new WaitForSeconds(_playerData.DashCD - _playerData.DashDuration);
+                _playerData.DashIsReady = true;
             }
-            StopDashing();
-            yield return new WaitForSeconds(_playerData.DashCD - _playerData.DashDuration);
-            _playerData.DashIsReady = true;
         }
     }
 
     private void StartDashing()
     {
         _graphAnimator.SetBool("Dashing", true);
-        _currentMovementState = MovementState.Dashing;
+        _currentBehavior = BehaviorState.DASH;
         _playerData.DashIsReady = false;
-        if (_movementDirection != Vector2.zero)
-            _dashDirection = _movementDirection;
     }
 
     private void StopDashing()
     {
         _graphAnimator.SetBool("Dashing", false);
-        _currentMovementState = MovementState.Moving;
+        _currentBehavior = BehaviorState.IDLE;
+        ////If movement input is pressed we directly start using it
+        if (_controlsMap.Gameplay.Movement.IsPressed())
+        {
+            ReadMovementDirection(_movementDirection);
+        }
     }
 
-    private void ReadMovementDirection(InputAction.CallbackContext ctx)
+    public void ReadMovementDirection(Vector2 direction)
     {
-        _movementDirection = ctx.ReadValue<Vector2>().normalized;
-        _currentMovementState = MovementState.Moving;
-        _graphAnimator.SetBool("Running", true);
+        //Avoid dead zone reading (performed is called also in dead zone :/)
+        if (direction != Vector2.zero)
+        {
+            //Update _movementDirection even while attacking, so we can aim with it
+            _movementDirection = direction;
+            if (_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
+            {
+                _currentBehavior = BehaviorState.MOVE;
+                _graphAnimator.SetBool("Running", true);
+            }
+        }
     }
 
-    private void StopReadMovementDirection()
+    public void StopReadMovementDirection()
     {
-        _dashDirection = _movementDirection;
-        _movementDirection = Vector2.zero;
-        _currentMovementState = MovementState.Idling;
-        _graphAnimator.SetBool("Running", false);
+        //Prevent switch behavior by canceling movement input
+        if (_currentBehavior != BehaviorState.ATTACK && _currentBehavior != BehaviorState.CAST)
+        {
+            _currentBehavior = BehaviorState.IDLE;
+            _graphAnimator.SetBool("Running", false);
+        }
+        //Still notify this to update new LastStickDirection
+        event_inputMovementIsStopped.Invoke();
     }
 
-    public enum MovementState
+    public enum BehaviorState
     {
-        Idling, Moving, Dashing
+        IDLE, MOVE, DASH, ATTACK, CAST
     }
 }
