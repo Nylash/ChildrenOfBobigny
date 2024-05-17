@@ -4,7 +4,7 @@ using UnityEngine.Events;
 //Place this script on the same object of the weapon trigger
 public class WeaponEvents : MonoBehaviour
 {
-    public UnityEvent<Collider> event_weaponHitsSomething;
+    [HideInInspector] public UnityEvent<Collider> event_weaponHitsSomething;
 
     private void OnEnable()
     {

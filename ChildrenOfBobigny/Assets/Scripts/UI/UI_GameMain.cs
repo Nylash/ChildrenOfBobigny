@@ -31,6 +31,7 @@ public class UI_GameMain : Singleton<UI_GameMain>
     private void OnEnable()
     {
         _playerData.event_dashAvailabilityUpdated.AddListener(SwitchDashStatus);
+        _playerData.event_currentHPUpdated.AddListener(UpdateHealthBar);
         _playerData.event_currentMPUpdated.AddListener(UpdateManaBar);
         _playerData.event_offensiveSpellCDUpdated.AddListener(UpdateOffensiveIcon);
         _playerData.event_defensiveSpellCDUpdated.AddListener(UpdateDefensiveIcon);
@@ -41,10 +42,16 @@ public class UI_GameMain : Singleton<UI_GameMain>
     {
         if (!this.gameObject.scene.isLoaded) return;
         _playerData.event_dashAvailabilityUpdated.RemoveListener(SwitchDashStatus);
+        _playerData.event_currentHPUpdated.RemoveListener(UpdateHealthBar);
         _playerData.event_currentMPUpdated.RemoveListener(UpdateManaBar);
         _playerData.event_offensiveSpellCDUpdated.RemoveListener(UpdateOffensiveIcon);
         _playerData.event_defensiveSpellCDUpdated.RemoveListener(UpdateDefensiveIcon);
         _playerData.event_controlSpellCDUpdated.RemoveListener(UpdateControlIcon);
+    }
+
+    private void UpdateHealthBar(float newHPValue)
+    {
+        _healthBarProgress.fillAmount = newHPValue / _playerData.MaxHP;
     }
 
     private void UpdateManaBar(float newMPValue)

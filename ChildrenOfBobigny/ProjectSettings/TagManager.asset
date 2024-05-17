@@ -8,6 +8,7 @@ TagManager:
   - Environnement
   - Spell
   - Shield
+  - Weapon
   layers:
   - Default
   - TransparentFX

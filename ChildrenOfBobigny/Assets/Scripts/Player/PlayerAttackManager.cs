@@ -11,7 +11,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     #endregion
 
     #region VARIABLES
-    List<GameObject> _hitEnnemies = new List<GameObject>();
+    private List<GameObject> _hitEnemies = new List<GameObject>();
     #region ACCESSORS
 
     #endregion
@@ -82,7 +82,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     //Clear _hitEnnemies list at the start of a new attack, so we can hit everybody
     public void StartNewAttack()
     {
-        _hitEnnemies.Clear();
+        _hitEnemies.Clear();
     }
 
     private void AttackedFinished()
@@ -107,18 +107,23 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
 
     private void WeaponHitSomething(Collider other)
     {
-        if (!_hitEnnemies.Contains(other.gameObject))
+        if (!_hitEnemies.Contains(other.gameObject))
         {
-            //Once a ennemy is hit we add it to the list so we avoid hitting him twice with one attack
-            _hitEnnemies.Add(other.gameObject);
-            try
+            if (other.CompareTag("Unit"))
             {
-                other.gameObject.GetComponent<BasicEnemy>().TakeDamage(_playerData.AttackDamage);
+                //Once a ennemy is hit we add it to the list so we avoid hitting him twice with one attack
+                _hitEnemies.Add(other.gameObject);
+                try
+                {
+                    other.gameObject.GetComponent<BasicEnemy>().TakeDamage(_playerData.AttackDamage);
+                }
+                catch (System.Exception)
+                {
+                    Debug.LogError("Player weapon hit an unit which doesn't have BasicEnemy script : " + other.gameObject.name);
+                }
+                return;
             }
-            catch (System.Exception)
-            {
-                Debug.LogError("Weapon hit something which doesn't have BasicEnemy script : " + other.gameObject.name);
-            }
+            Debug.LogError("Player weapon hit something not handled : " + other.gameObject.name);
         }
     }
 }

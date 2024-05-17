@@ -8,8 +8,23 @@ public class PlayerHealthManager : Singleton<PlayerHealthManager>
     [SerializeField] private Data_Player _playerData;
     #endregion
 
+    private void Start()
+    {
+        _playerData.CurrentHP = _playerData.MaxHP;
+    }
+
     public void TakeDamage(float damage)
     {
-        throw new NotImplementedException();
+        _playerData.CurrentHP -= damage;
+        if( _playerData.CurrentHP < 0)
+        {
+            _playerData.CurrentHP = 0;
+            PlayerDie();
+        }
+    }
+
+    private void PlayerDie()
+    {
+        Destroy(gameObject);
     }
 }

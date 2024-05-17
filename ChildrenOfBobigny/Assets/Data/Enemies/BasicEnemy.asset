@@ -13,3 +13,4 @@ MonoBehaviour:
   m_Name: BasicEnemy
   m_EditorClassIdentifier: 
   _maxHP: 100
+  _attackDamage: 5

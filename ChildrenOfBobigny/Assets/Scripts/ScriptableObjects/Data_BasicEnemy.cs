@@ -8,8 +8,10 @@ using UnityEngine.Events;
 public class Data_BasicEnemy : ScriptableObject
 {
     [SerializeField] private float _maxHP;
+    [SerializeField] private float _attackDamage;
 
     #region ACCESSORS
     public float MaxHP { get => _maxHP;}
+    public float AttackDamage { get => _attackDamage; }
     #endregion
 }
