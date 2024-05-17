@@ -3,7 +3,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using static Utilities;
 
-public class UI_GameMain : Singleton<UI_GameMain>
+public class UI_Game_Main_Manager : Singleton<UI_Game_Main_Manager>
 {
     #region COMPONENTS
     [Header("COMPONENTS")]
