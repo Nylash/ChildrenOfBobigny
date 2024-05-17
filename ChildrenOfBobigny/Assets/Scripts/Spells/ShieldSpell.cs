@@ -9,6 +9,7 @@ public class ShieldSpell : Spell
     {
         _spell_data = data;
 
+        //Adjust layer to shield from spell
         if(gameObject.layer == _spell_data.PlayerSpellLayer)
         {
             gameObject.layer = _spell_data.PlayerShieldLayer;

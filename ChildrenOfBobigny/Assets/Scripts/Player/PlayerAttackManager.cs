@@ -109,7 +109,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
     {
         if (!_hitEnemies.Contains(other.gameObject))
         {
-            if (other.CompareTag("Unit"))
+            if (other.CompareTag("Enemy"))
             {
                 //Once a ennemy is hit we add it to the list so we avoid hitting him twice with one attack
                 _hitEnemies.Add(other.gameObject);
@@ -119,7 +119,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
                 }
                 catch (System.Exception)
                 {
-                    Debug.LogError("Player weapon hit an unit which doesn't have BasicEnemy script : " + other.gameObject.name);
+                    Debug.LogError("Player weapon hit an enemy which doesn't have BasicEnemy script : " + other.gameObject.name);
                 }
                 return;
             }

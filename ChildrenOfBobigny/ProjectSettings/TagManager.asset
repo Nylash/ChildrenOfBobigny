@@ -4,11 +4,12 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Unit
+  - Enemy
   - Environnement
   - Spell
   - Shield
   - Weapon
+  - Ally
   layers:
   - Default
   - TransparentFX

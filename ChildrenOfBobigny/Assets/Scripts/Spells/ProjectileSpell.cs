@@ -37,7 +37,7 @@ public class ProjectileSpell : Spell
     {
         switch (collision.gameObject.tag)
         {
-            case "Unit":
+            case "Enemy":
                 collision.gameObject.GetComponent<BasicEnemy>().TakeDamage(_spellData.Damage);
                 DestroySpell();
                 break;

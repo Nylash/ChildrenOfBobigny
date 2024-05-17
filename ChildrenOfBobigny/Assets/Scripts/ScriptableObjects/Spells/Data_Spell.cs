@@ -4,7 +4,7 @@ using UnityEngine.Events;
 /// <summary>
 /// This SO is used to balance spells, value can be modified by skills
 /// </summary>
-public class Data_Spell : ScriptableObject
+public abstract class Data_Spell : ScriptableObject
 {
     #region CONFIGURATION
     [Header("GLOBAL INFO")]
