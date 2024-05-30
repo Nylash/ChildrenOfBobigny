@@ -9,16 +9,26 @@ namespace BehaviorTree
     }
     public class Node
     {
+        #region VARIABLES
         protected NodeState state;
 
-        public Node parent;
+        private Node _root;
+        private Node _parent;
+
         protected List<Node> children;
 
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
+        #endregion
+
+        #region ACCESSORS
+        public Node Root { get => _root; set => _root = value; }
+        public Node Parent { get => _parent; set => _parent = value; }
+        public List<Node> Children { get => children;}
+        #endregion
 
         public Node()
         {
-            parent = null;
+            _parent = null;
         }
         public Node(List<Node> children)
         {
@@ -30,7 +40,7 @@ namespace BehaviorTree
 
         private void Attach(Node node)
         {
-            node.parent = this;
+            node.Parent = this;
             children.Add(node);
         }
 
@@ -43,36 +53,40 @@ namespace BehaviorTree
 
         public object GetData(string key)
         {
+            //Do the node contains the data ?
             object value = null;
             if(_dataContext.TryGetValue(key, out value))
                 return value;
 
-            Node node = parent;
+            //Else we search upward in the tree (parent after parent)
+            Node node = _parent;
             while (node != null)
             {
                 value = node.GetData(key);
                 if (value != null) 
                     return value;
-                node = node.parent;
+                node = node.Parent;
             }
             return null;
         }
 
         public bool ClearData(string key)
         {
+            //Do the node contains the data ?
             if (_dataContext.ContainsKey(key))
             {
                 _dataContext.Remove(key);
                 return true;
             }
 
-            Node node = parent;
+            //Else we search upward in the tree (parent after parent)
+            Node node = _parent;
             while (node != null)
             {
                 bool cleared = node.ClearData(key);
                 if (cleared)
                     return true;
-                node = node.parent;
+                node = node.Parent;
             }
             return false;
         }
