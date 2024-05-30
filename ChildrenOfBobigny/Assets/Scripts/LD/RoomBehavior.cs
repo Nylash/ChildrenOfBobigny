@@ -5,7 +5,7 @@ public class RoomBehavior : MonoBehaviour
 {
     #region VARIABLES
     [Header("VARIABLES")]
-    [SerializeField, ReadOnly] private List<BasicEnemy> _associatedEnemies = new List<BasicEnemy>();
+    [SerializeField, ReadOnly] private List<BasicEnemy_BT> _associatedEnemies = new List<BasicEnemy_BT>();
     [SerializeField, ReadOnly] private bool _roomCleared;
     #endregion
 
@@ -17,22 +17,22 @@ public class RoomBehavior : MonoBehaviour
     {
         if (other.gameObject.CompareTag("Player"))
         {
-            foreach (BasicEnemy enemy in _associatedEnemies)
+            foreach (BasicEnemy_BT enemy in _associatedEnemies)
             {
-                enemy.Target = other.transform;
+                enemy.SetTarget(other.transform);
             }
         }
         if (other.gameObject.CompareTag("Enemy"))
         {
-            if(other.gameObject.GetComponent<BasicEnemy>().AssociatedRoom == null) 
+            if(other.gameObject.GetComponent<BasicEnemy_BT>().AssociatedRoom == null) 
             {
-                other.gameObject.GetComponent<BasicEnemy>().AssociatedRoom = this;
-                _associatedEnemies.Add(other.gameObject.GetComponent<BasicEnemy>());
+                other.gameObject.GetComponent<BasicEnemy_BT>().AssociatedRoom = this;
+                _associatedEnemies.Add(other.gameObject.GetComponent<BasicEnemy_BT>());
             }
         }
     } 
 
-    public void RemoveEnemy(BasicEnemy enemy)
+    public void RemoveEnemy(BasicEnemy_BT enemy)
     {
         if (_associatedEnemies.Contains(enemy))
         {

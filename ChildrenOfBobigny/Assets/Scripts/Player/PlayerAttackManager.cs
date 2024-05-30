@@ -115,7 +115,7 @@ public class PlayerAttackManager : Singleton<PlayerAttackManager>
                 _hitEnemies.Add(other.gameObject);
                 try
                 {
-                    other.gameObject.GetComponent<BasicEnemy>().TakeDamage(_playerData.AttackDamage);
+                    other.gameObject.GetComponent<BasicEnemy_BT>().TakeDamage(_playerData.AttackDamage);
                 }
                 catch (System.Exception)
                 {

@@ -4,11 +4,13 @@ namespace BehaviorTree
 {
     public abstract class Tree : MonoBehaviour
     {
-        private Node _root = null;
+        protected Node _root = null;
 
         protected virtual void Start()
         {
             _root = SetupTree();
+
+            AttachRoot(_root);
         }
 
         protected virtual void Update()
@@ -19,7 +21,7 @@ namespace BehaviorTree
 
         protected abstract Node SetupTree();
 
-        protected void AttachRoot(Node node)
+        private void AttachRoot(Node node)
         {
             node.Root = _root;
 
