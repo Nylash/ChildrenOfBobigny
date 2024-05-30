@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Diagnostics;
 
 //From video https://www.youtube.com/watch?v=aR6wt5BlE-E
 namespace BehaviorTree
@@ -7,7 +8,7 @@ namespace BehaviorTree
     {
         RUNNING, SUCCESS, FAILURE
     }
-    public class Node
+    public abstract class Node
     {
         #region VARIABLES
         protected NodeState state;
@@ -15,7 +16,7 @@ namespace BehaviorTree
         private Node _root;
         private Node _parent;
 
-        protected List<Node> children;
+        protected List<Node> children = new List<Node>();
 
         private Dictionary<string, object> _dataContext = new Dictionary<string, object>();
         #endregion
@@ -44,7 +45,7 @@ namespace BehaviorTree
             children.Add(node);
         }
 
-        public virtual NodeState Evaluate() => NodeState.FAILURE;
+        public abstract NodeState Evaluate();
 
         public void SetData(string key, object value)
         {
