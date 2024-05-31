@@ -39,7 +39,7 @@ public class ProjectileSpell : Spell
         switch (collision.gameObject.tag)
         {
             case "Enemy":
-                collision.gameObject.GetComponent<BasicEnemy>().TakeDamage(_spellData.Damage);
+                collision.gameObject.GetComponent<BasicEnemy_BT>().TakeDamage(_spellData.Damage);
                 DestroySpell();
                 break;
             case "Player":
