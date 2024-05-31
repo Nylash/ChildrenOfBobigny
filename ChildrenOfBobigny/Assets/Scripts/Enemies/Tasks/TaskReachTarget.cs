@@ -1,4 +1,4 @@
-using BehaviorTree;
+using BehaviourTree;
 using UnityEngine;
 using UnityEngine.AI;
 

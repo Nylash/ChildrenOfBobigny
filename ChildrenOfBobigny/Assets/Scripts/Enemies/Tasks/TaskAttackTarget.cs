@@ -1,4 +1,4 @@
-using BehaviorTree;
+using BehaviourTree;
 using System.Collections.Generic;
 using UnityEngine;
 

@@ -1,9 +1,9 @@
-using BehaviorTree;
+using BehaviourTree;
 using System;
 using UnityEngine;
 using UnityEngine.UI;
 
-public abstract class BasicEnemy_BT : BehaviorTree.Tree
+public abstract class BasicEnemy_BT : BehaviourTree.BehaviourTree
 {
     [Header("BASE")]
     #region COMPONENTS

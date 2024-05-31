@@ -1,4 +1,4 @@
-using BehaviorTree;
+using BehaviourTree;
 
 public class CheckTargetInRange : Node
 {
