@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -8,7 +9,7 @@ namespace BehaviourTree
     {
         RUNNING, SUCCESS, FAILURE
     }
-    public abstract class Node
+    public abstract class Node : IDisposable
     {
         #region VARIABLES
         protected NodeState state;
@@ -91,5 +92,7 @@ namespace BehaviourTree
             }
             return false;
         }
+
+        public virtual void Dispose() {}
     }
 }

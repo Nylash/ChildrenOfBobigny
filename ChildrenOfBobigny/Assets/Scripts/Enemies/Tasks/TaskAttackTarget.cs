@@ -56,4 +56,9 @@ public class TaskAttackTarget : Node
             Debug.LogError("Enemy weapon hit something not handled : " + other.gameObject.name);
         }
     }
+
+    public override void Dispose()
+    {
+        _weaponEvents.event_weaponHitsSomething.RemoveListener(WeaponHitSomething);
+    }
 }
