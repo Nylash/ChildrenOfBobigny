@@ -1,12 +1,11 @@
 using BehaviorTree;
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.AI;
 using UnityEngine.UI;
 
 public abstract class BasicEnemy_BT : BehaviorTree.Tree
 {
+    [Header("BASE")]
     #region COMPONENTS
     [SerializeField] private Image _HPBarFill;
     [SerializeField] private GameObject _HPBar;
@@ -21,7 +20,6 @@ public abstract class BasicEnemy_BT : BehaviorTree.Tree
     #endregion
 
     #region CONFIGURATION
-    [Header("CONFIGURATION")]
     [SerializeField] protected Data_BasicEnemy _enemyData;
     #endregion
 
@@ -38,13 +36,9 @@ public abstract class BasicEnemy_BT : BehaviorTree.Tree
         UpdateHPBar();
     }
 
-    protected override void Update()
+    protected void LateUpdate()
     {
-        base.Update();
-    }
-
-    protected virtual void LateUpdate()
-    {
+        //Make HP bar always face the camera
         _HPBar.transform.LookAt(transform.position + Camera.main.transform.rotation * Vector3.forward, Camera.main.transform.rotation * Vector3.up);
     }
 
